@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -83,6 +84,32 @@ DATABASES = {
     }
 }
 
+# Mysql config.
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'MY DB',
+#         'USER': 'MY USER',
+#         'PASSWORD': 'MY PASSWORD',
+#         'HOST': 'MY IP',
+#         'PORT': 'MY PORT',
+#     }
+# }
+
+# django-redis
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://IP:6379/1",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "PASSWORD": "你猜",
+#             # "COMPRESSOR": "django_redis.compressors.lzma.LzmaCompressor",   # lzma 压缩
+#             "CONNECTION_POOL_KWARGS": {"max_connections": 20},              # 连接池的最大连接数量
+#             # "PARSER_CLASS": "redis.connection.HiredisParser",               # hiredis, C 实现 Redis 客户端
+#         }
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -108,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'CST'
 
 USE_I18N = True
 
@@ -116,8 +143,25 @@ USE_L10N = True
 
 USE_TZ = True
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+
+# session 设置
+SESSION_COOKIE_AGE = 60 * 300 # 30分钟
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True # 关闭浏览器，则COOKIE失效
+
+# redis session backend
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"
+
+loger = logging.getLogger('default')

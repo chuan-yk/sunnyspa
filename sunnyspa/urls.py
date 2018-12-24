@@ -19,11 +19,10 @@ from django.contrib.auth import views as auth
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-
-# from . import views
+from management import views
 
 urlpatterns = [
-
+    url(r'/', include('management.urls')),
     path(r'admin/', admin.site.urls),
     url(r'^users/login/$', auth.login, {'template_name': 'login.html'}, name='login'),
     url(r'^users/logout/$', auth.logout, {'next_page': '/'}, name='logout'),
