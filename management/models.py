@@ -29,7 +29,7 @@ class StaffInfo(models):
     note = models.CharField(max_length=500, default='_', help_text='备注')
 
     def __str__(self):
-        return self.name
+        return self.nameyt5
 
     def countslary(self, workday=13, overtime=0, commission_count=0, penalty=0):
         """计算发放工资  ; workday: 工作时间， 每半个月发一次工资！; overtime: 加班时间; penalty: 预支或迟到早退等原因扣钱"""
