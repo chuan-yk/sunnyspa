@@ -1,2 +1,2 @@
 # sunnyspa
-Django 管理订单、考勤等信息
+Django 管理订单、考勤、顾客消费统计等信息
