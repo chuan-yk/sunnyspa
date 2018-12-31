@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{#{% load  bootstrap3 %}#}
+{% block title %} 阳光SPA管理界面|首页 {% endblock %}
+
+{% block header-css %}
+{#{% include "_css.html" %}#}
+{% endblock %}
+
+
+
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">单数</span>
+                    <h5>本月服务单数</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="">{{ orders.count }}</a></h1>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-info pull-right">业绩</span>
+                    <h5>本月业绩收入</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="">本月业绩收入</a></h1>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-success pull-right">顾客</span>
+                    <h5>用户数量</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="">用户数量</a></h1>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-info pull-right">收入</span>
+                    <h5>净收入</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins"><a href="">净收入</a></h1>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <br/>
+{% endblock %}

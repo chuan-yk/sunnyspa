@@ -79,7 +79,22 @@ class CustomerInfo(models.Model):
         return 'CustomerInfo: {}'.format(self.phone)
 
 
+class Massage(models.Model):
+    """massage order detail"""
+    name = models.CharField(max_length=200, default='_', help_text='用户姓名')
+    uin = models.IntegerField(default=0, help_text='唯一标识符')
+    phone = models.CharField(max_length=20, default='_', help_text="电话号码")
+    address = models.TextField(max_length=500, default='_', help_text="登记地址")
+    service_date = models.DateField(null=True, help_text="服务时间，以工作日为准")
+    service_type = models.ForeignKey(ServiceMenu, null=True, on_delete=models.SET_NULL, help_text='服务类型')
+    payment_option = models.CharField(max_length=50)
+    amount = models.IntegerField(default=0, help_text='实收金额')
+    tip = models.IntegerField(default=0, help_text='收取小费')
+    order_status = models.CharField(max_length=50, help_text='完成状态')
+    note = models.CharField(default='', max_length=500, help_text="备注")
 
+    def __str__(self):
+        return str(self.name) + str(self.service_type)
 
 
 
