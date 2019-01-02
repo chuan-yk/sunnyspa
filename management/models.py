@@ -9,7 +9,7 @@ class ServiceMenu(models.Model):
     duration = models.IntegerField(default=60, help_text='服务时长, 单位分钟')
     price = models.IntegerField(default=680, help_text='服务单价')
     currency = models.CharField(max_length=20, default='piso', help_text='计价货币')
-    description = models.CharField(default='', max_length=500, help_text='类型说明')
+    description = models.CharField(default=' ', blank=True, max_length=500, help_text='类型说明')
 
     def __str__(self):
         return '项目：{:<20}  | 时间：{} 分钟  |  价格：{} {}  |  简介：{}'.format(str(self.items), str(self.duration),
@@ -91,7 +91,12 @@ class Massage(models.Model):
         (2, '人民币现金'),
         (3, '在线支付'),
     )
-
+    order_status_options = (
+        (0, '完成|未迟到'),
+        (1, '完成|迟到'),
+        (2, '用户取消'),
+        (3, '迟到取消'),
+    )
     name = models.CharField(max_length=200, default='_', help_text='用户姓名')
     uin = models.ForeignKey(CustomerInfo, on_delete=models.SET_NULL, related_name='customer_set', null=True, blank=True,
                             help_text='用户ID 标识符号，关联CustomerInfo， 对新用户，可为空')
@@ -105,8 +110,8 @@ class Massage(models.Model):
     massagist = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, related_name='massagist_set', null=True, blank=True,
                                   help_text='按摩师')
     tip = models.IntegerField(default=0, help_text='收取小费')
-    order_status = models.CharField(default='完成', max_length=50, help_text='完成状态')
-    note = models.CharField(default=' ', max_length=500, help_text="备注")
+    order_status = models.IntegerField(choices=order_status_options, default=0, help_text='完成状态')
+    note = models.CharField(default='-', blank=True, max_length=500, help_text="备注")
 
     def __str__(self):
         return str(self.name) + str(self.service_type)
