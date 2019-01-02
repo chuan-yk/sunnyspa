@@ -17,8 +17,9 @@ from .models import ServiceMenu
 @login_required
 def index(request):
     """首页展示"""
-    # orders_count = Massage.objects.filter(service_date__month=datetime.date.today().month).count()
-    # income = Massage.objects.annotate(sum=F(amount)+F(tip)).aggregate(Sum(sum))
+    #orders_count = Massage.objects.filter(service_date__month=datetime.date.today().month).count()
+    #income = Massage.objects.annotate(sum=F(amount)+F(tip)).aggregate(Sum(sum))
     #
-    orders = {'test': 'test'}
+    orders = {'test':'test'}
+
     return render(request, 'index.html', {'orders': orders})
