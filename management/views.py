@@ -14,6 +14,7 @@ from django.db.models import Sum
 from .models import Massage
 from .models import ServiceMenu
 
+
 @login_required
 def index(request):
     """首页展示"""

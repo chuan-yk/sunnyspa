@@ -165,4 +165,34 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True # 关闭浏览器，则COOKIE失效
 # SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 # SESSION_CACHE_ALIAS = "default"
 
-loger = logging.getLogger('default')
+# logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s    %(levelname)s    %(message)s'
+        }
+    },
+    'handlers': {
+        'run_handler': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR + '/logs/', 'script.log'),
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'tasks': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'runlog': {
+            'handlers': ['run_handler'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
