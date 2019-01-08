@@ -171,7 +171,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '%(asctime)s    %(levelname)s    %(message)s'
+            'format': '%(asctime)s  %(levelname)s  %(message)s'
         }
     },
     'handlers': {
@@ -184,7 +184,7 @@ LOGGING = {
     },
     'loggers': {
         'tasks': {
-            'handlers': ['console'],
+            'handlers': ['run_handler'],
             'level': 'DEBUG',
             'propagate': True,
         },

@@ -1,6 +1,9 @@
+import logging
 from django.db import models
 from django.utils import timezone
-from sunnyspa.settings import loger
+
+
+loger = logging.getLogger('runlog')
 
 
 class ServiceMenu(models.Model):
