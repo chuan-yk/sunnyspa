@@ -19,7 +19,7 @@
                     <h5>本月服务单数</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins"><a href="">本月共 <span style="color: #f00;">{{ orders.count }}</span> 单</a></h1>
+                    <h1 class="no-margins"><a href="">本月共 <span style="color: #f00;">{{ content.pk__count }}</span> 单</a></h1>
 
                 </div>
             </div>
@@ -31,7 +31,7 @@
                     <h5>本月业绩收入</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins"><a href="">本月业绩收入</a></h1>
+                    <h1 class="no-margins"><a href="">共 <span style="color: #f00;">{{ content.amount__sum }}</span>  比索</a></h1>
 
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     <h5>用户数量</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins"><a href="">用户数量</a></h1>
+                    <h1 class="no-margins"><a href="">用户 <span style="color: #f00;">{{ person_count }}</span> 人</a></h1>
 
                 </div>
             </div>
