@@ -24,6 +24,7 @@ from management import views as myidx
 urlpatterns = [
     url(r'^$', myidx.index, name='home'),
     path('index', myidx.index, name="home_index"),
+    url(r'orders/', myidx.ordersindex),
     path(r'admin/', admin.site.urls),
     url(r'^users/login/$', auth.login, {'template_name': 'login.html'}, name='login'),
     url(r'^users/logout/$', auth.logout, {'next_page': '/'}, name='logout'),
