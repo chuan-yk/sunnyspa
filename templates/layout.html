@@ -44,7 +44,7 @@
 					<ul class="header-nav header-nav-options">
 						<li class="header-nav-brand" >
 							<div class="brand-holder">
-								<a href="{% url 'home' %}">
+								<a href="{% url 'management_url_site:home' %}">
 									<span class="text-lg text-light text-danger">Sunny SPA</span><span class="text-lg text-bold text-primary"> 管理后台</span>
 								</a>
 							</div>
@@ -114,7 +114,7 @@
 						</a>
 					</div>
 					<div class="expanded">
-						<a href="{% url 'home' %}">
+						<a href="{% url 'management_url_site:home' %}">
 							<span class="text-lg text-bold text-primary ">MATERIAL&nbsp;ADMIN</span>
 						</a>
 					</div>
@@ -126,7 +126,7 @@
 
 						<!-- BEGIN DASHBOARD -->
 						<li>
-							<a href="{% url 'home' %}" class="active">
+							<a href="{% url 'management_url_site:home' %}" class="active">
 								<div class="gui-icon"><i class="md md-home"></i></div>
 								<span class="title">主菜单栏</span>
 							</a>
@@ -142,7 +142,7 @@
 							<!--start submenu -->
 							<ul>
 {#								<li><a href="{% url 'new' %}" ><span class="title">Add Order</span></a></li>#}
-								<li><a href="#" ><span class="title">全部订单</span></a></li>
+								<li><a href="{% url 'management_url_site:orders' %}" ><span class="title">全部订单</span></a></li>
 								<li><a href="#" ><span class="title">录入订单</span></a></li>
 								<li><a href="#" ><span class="title">订单报表</span></a></li>
 							</ul><!--end /submenu -->

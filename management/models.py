@@ -89,16 +89,16 @@ class Massage(models.Model):
     """massage order detail"""
     # 可选支付方式
     payment_choice = (
-        (0, '比索现金'),
-        (1, '美元现金'),
-        (2, '人民币现金'),
-        (3, '在线支付'),
+        ('比索现金', '比索现金'),
+        ('美元现金', '美元现金'),
+        ('人民币现金', '人民币现金'),
+        ('在线支付', '在线支付'),
     )
     order_status_options = (
-        (0, '完成|未迟到'),
-        (1, '完成|迟到'),
-        (2, '用户取消'),
-        (3, '迟到取消'),
+        ('完成|未迟到', '完成|未迟到'),
+        ('完成|迟到', '完成|迟到'),
+        ('用户取消', '用户取消'),
+        ('迟到取消', '迟到取消'),
     )
     name = models.CharField(max_length=200, default='_', help_text='用户姓名')
     uin = models.ForeignKey(CustomerInfo, on_delete=models.SET_NULL, related_name='customer_set', null=True, blank=True,
@@ -107,13 +107,13 @@ class Massage(models.Model):
     address = models.TextField(max_length=500, default='_', help_text="登记地址")
     service_date = models.DateField(null=True, blank=True, help_text="服务时间，以工作日为准")
     service_type = models.ForeignKey(ServiceMenu, null=True, on_delete=models.SET_NULL, help_text='服务类型')
-    payment_option = models.IntegerField(choices=payment_choice, default=0, help_text='付款方式')
+    payment_option = models.CharField(choices=payment_choice, max_length=200, default='比索现金', help_text='付款方式')
     amount = models.IntegerField(default=0, help_text='实收金额')
     discount = models.IntegerField(default=0, help_text='优惠金额')
     massagist = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, related_name='massagist_set', null=True, blank=True,
                                   help_text='按摩师')
     tip = models.IntegerField(default=0, help_text='收取小费')
-    order_status = models.IntegerField(choices=order_status_options, default=0, help_text='完成状态')
+    order_status = models.CharField(choices=order_status_options, max_length=200, default='完成|未迟到', help_text='完成状态')
     note = models.CharField(default='-', blank=True, max_length=500, help_text="备注")
 
     def __str__(self):

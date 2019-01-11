@@ -19,12 +19,11 @@ from django.contrib.auth import views as auth
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from management import views as myidx
+
+from management import urls as burls
 
 urlpatterns = [
-    url(r'^$', myidx.index, name='home'),
-    path('index', myidx.index, name="home_index"),
-    url(r'orders/', myidx.ordersindex),
+    path('', include(burls, namespace='management_url_site')),
     path(r'admin/', admin.site.urls),
     url(r'^users/login/$', auth.login, {'template_name': 'login.html'}, name='login'),
     url(r'^users/logout/$', auth.logout, {'next_page': '/'}, name='logout'),
