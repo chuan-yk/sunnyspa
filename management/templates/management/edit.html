@@ -1,0 +1,124 @@
+{% extends 'layout.html' %}
+{% load widget_tweaks %}
+{% block title %} 编辑订单内容 {% endblock %}
+{% block body %}
+    <section>
+        <div class="section-body">
+            <div class="row">
+                <!-- BEGIN  - FORM -->
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-head style-primary">
+                            <header>编辑订单</header>
+                            <div class="tools">
+                                <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
+                                <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form class="form" role="form" action="" method="post"> {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <header>用户信息</header>
+                                        <div class="form-group floating-label">
+                                            {{ form.name | add_class:'form-control' }}
+                                            <label for="regular2">客户姓名</label>
+                                        </div>
+                                        <div class="form-group floating-label">
+                                            {{ form.uin | add_class:'form-control' }}
+                                            <label for="regular2">客户编号</label>
+                                        </div>
+                                        <div class="form-group floating-label">
+                                            {{ form.phone | add_class:'form-control' }}
+                                            <label for="regular2">客户手机号码</label>
+                                        </div>
+                                        <div class="form-group floating-label">
+                                            {{ form.address | add_class:'form-control' | attr:'rows:2' }}
+                                            <label for="textarea2">Address</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <header>订单信息</header>
+                                        <div class="form-group">
+                                            {{ form.service_date  | add_class:'form-control' }}
+                                            <label for="regular2">服务日期</label>
+                                        </div>
+                                        <div class="form-group floating-label">
+                                            {{ form.service_type | add_class:'form-control' | attr:'rows:2' }}
+                                            <label for="textarea2">消费项目</label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group floating-label">
+                                                    {{ form.payment_option| add_class:'form-control' }}
+                                                    <label for="select2">支付方式</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group floating-label">
+                                                    {{ form.amount | add_class:'form-control' }}
+                                                    <label for="regular2">金额</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group floating-label">
+                                                    {{ form.massagist| add_class:'form-control' }}
+                                                    <label for="select2">服务技师</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group floating-label">
+                                                    {{ form.tip | add_class:'form-control' }}
+                                                    <label for="regular2">小费</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <div class="form-group floating-label">
+                                                    {{ form.discount | add_class:'form-control' }}
+                                                    <label for="regular2">优惠</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <hr>
+                                        <label class="radio-inline radio-styled col-sm-2">
+                                            <b>订单状态:</b>
+                                        </label>
+                                        <div class="col-md-10">
+                                            {% for radio in form.order_status %}
+                                                <label class="radio-inline radio-styled">
+                                                    {{ radio }}
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <hr>
+                                        <b>备注:</b>
+                                        <div class="form-group floating-label">
+                                            {{ form.note | add_class:'form-control' | attr:'rows:2' }}
+{#                                            <label for="textarea2">备注</label>#}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+
+                                        <div class="card-actionbar-row">
+                                            <input type="submit" class="btn btn-flat btn-primary ink-reaction"
+                                                   value="提交修改">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div><!--end .card-body -->
+                    </div><!--end .card -->
+                </div><!--end .col -->
+                <!-- END FORM -->
+
+            </div><!--end .row -->
+        </div><!--end .section-body -->
+    </section>
+
+{% endblock %}

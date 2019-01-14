@@ -5,6 +5,7 @@ from . import views
 app_name = 'management_url_site'
 urlpatterns = [
     url(r'^$', views.index, name='home'),
-    url('index', views.index, name="home_index"),
-    url(r'orders/', views.ordersindex, name='orders'),
+    url('index$', views.index, name="home_index"),
+    url(r'orders$', views.ordersindex, name='orders'),
+    url(r'orders/(?P<pk>\d+)/edit$', views.orderedit, name='edit'),
 ]
