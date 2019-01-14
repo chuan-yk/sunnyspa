@@ -55,7 +55,7 @@ class StaffInfo(models.Model):
 class SalaryRecord(models.Model):
     """工资发放记录"""
     name = models.ForeignKey(StaffInfo, null=True, blank=True, on_delete=models.SET_NULL, help_text='员工信息关联StaffInfo表')
-    work_period = models.CharField(default='_', null=False, max_length=20, help_text='计算日期区间')
+    work_period = models.CharField(default='_', null=False, max_length=20, help_text='计算日期区间, 如20190101 - 20190115')
     work_day = models.CharField(default='_', null=True, max_length=20, help_text='上班日期')
     work_day_count = models.IntegerField(default=0, null=False, help_text='上班天数')
     commission_count = models.IntegerField(default=0, null=False, help_text='提成个数')
@@ -113,8 +113,9 @@ class Massage(models.Model):
     massagist = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, related_name='massagist_set', null=True, blank=True,
                                   help_text='按摩师')
     tip = models.IntegerField(default=0, help_text='收取小费')
+    fee = models.IntegerField(default=0, help_text='其他花费，如打车费用')
     order_status = models.CharField(choices=order_status_options, max_length=200, default='完成|未迟到', help_text='完成状态')
     note = models.CharField(default='-', blank=True, max_length=500, help_text="备注")
 
     def __str__(self):
-        return str(self.name) + str(self.service_type)
+        return '顾客： {} |- 消费：{}'.format(str(self.name), str(self.service_type))

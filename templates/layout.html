@@ -143,8 +143,8 @@
 							<ul>
 {#								<li><a href="{% url 'new' %}" ><span class="title">Add Order</span></a></li>#}
 								<li><a href="{% url 'management_url_site:orders' %}" ><span class="title">全部订单</span></a></li>
-								<li><a href="#" ><span class="title">录入订单</span></a></li>
-								<li><a href="#" ><span class="title">订单报表</span></a></li>
+								<li><a href="{% url 'management_url_site:add' %}" ><span class="title">录入订单</span></a></li>
+								<li><a href="{% url 'management_url_site:analysis' %}" ><span class="title">订单报表</span></a></li>
 							</ul><!--end /submenu -->
 						</li><!--end /menu-li -->
 						<!-- END ORDER -->

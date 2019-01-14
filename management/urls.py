@@ -8,4 +8,6 @@ urlpatterns = [
     url('index$', views.index, name="home_index"),
     url(r'orders$', views.ordersindex, name='orders'),
     url(r'orders/(?P<pk>\d+)/edit$', views.orderedit, name='edit'),
+    url(r'orders/add$', views.ordernew, name='add'),
+    url(r'orders/analysis$', views.ordersanalysis, name='analysis'),
 ]

@@ -35,6 +35,7 @@
                                                         <th>实收金额</th>
                                                         <th>优惠金额</th>
                                                         <th>小费</th>
+                                                        <th>车费</th>
                                                         <th>完成状态</th>
                                                         <!-- <th width="150px">备注</th> -->
                                                         <th>备注</th>
@@ -57,12 +58,13 @@
                                                             <td>{{ order.amount }}</td>
                                                             <td>{{ order.discount }}</td>
                                                             <td>{{ order.tip }}</td>
+                                                            <td>{{ order.fee }}</td>
                                                             <td>{{ order.order_status }}</td>
                                                             <td>{{ order.note }}</td>
                                                             <td>
 {#                                                                 <a href="{% url 'edit' order.id %}" class="btn ink-reaction btn-floating-action btn-warning"><i class="md md-edit"></i> </a> #}
                                                                 <a href="{% url 'management_url_site:edit' order.id %}" class="btn ink-reaction btn-floating-action btn-warning"><i class="md md-edit"></i> </a>
-                                                                <a href="#" class="btn ink-reaction btn-floating-action btn-danger" onclick="return confirm('Are you sure you want to delete this?')"><i class="md md-delete"></i> </a>
+                                                                <a href="#" class="btn ink-reaction btn-floating-action btn-danger" onclick="return confirm('暂不提供删除功能')"><i class="md md-delete"></i> </a>
 
                                                             </td>
                                                         </tr>
