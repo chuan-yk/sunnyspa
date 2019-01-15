@@ -100,13 +100,13 @@ def ordersanalysis(request):
         start_date = datetime.datetime.strptime(request.GET['start_date'].strip(), '%Y-%m-%d').date()
     else:
         start_date = datetime.date(2017, 8, 31)  # 默认开业时间
-    query_dict['start_date'] = start_date
+    query_dict['start_date'] = start_date.strftime("%Y-%m-%d")
     # 查询条件结束日期
     if request.GET.get('end_date'):
         end_date = datetime.datetime.strptime(request.GET['end_date'].strip(), '%Y-%m-%d').date()
     else:
         end_date = datetime.date.today()
-    query_dict['end_date'] = end_date
+    query_dict['end_date'] = end_date.strftime("%Y-%m-%d")
     query_conditions = [Q(service_date__gte=start_date), Q(service_date__lte=end_date)]
     # 客户姓名查询条件, 精准查询
     if request.GET.get('exact_name'):
@@ -152,7 +152,10 @@ def ordersanalysis(request):
     if request.GET.get('duration'):
         duration = request.GET['duration'].strip()
         query_conditions.append(Q(service_type__duration=duration))
-        query_dict['duration'] = duration
+        try:
+            query_dict['duration'] = int(duration)
+        except:
+            query_dict['duration'] = duration
     # 订单状态查询，模糊条件
     if request.GET.get('order_status'):
         order_status = request.GET['order_status'].strip()
@@ -192,8 +195,15 @@ def ordersanalysis(request):
     orders = Massage.objects.filter(*query_conditions)
     loger.info("ordersanalysis, query oders count: {} result id : {}".format(len(orders), orders.values_list('pk', flat=True)))
     sum_count = orders.aggregate(Sum('amount'), Count('pk'), )
-    massagist_list = {'xx1': 'xx1', 'xx2': 'xx2', 'xx3': 'xx3'}
-    content = {**query_dict, **sum_count, **massagist_list}
+    # select对应下拉框列表
+    massagist_list = StaffInfo.objects.all().values_list('name', flat=True)
+    payment_list = Massage.objects.all().values_list("payment_option", flat=True).distinct().order_by()
+    items_list = Massage.objects.all().values_list("service_type__items", flat=True).distinct().order_by()
+    duration_list = Massage.objects.all().values_list("service_type__duration", flat=True).distinct().order_by()
+    order_status_list = Massage.objects.all().values_list("order_status", flat=True).distinct().order_by()
+    # template - content
+    content = {'massagist_list': massagist_list, 'payment_list': payment_list, 'items_list': items_list,
+               'duration_list': duration_list, 'order_status_list': order_status_list, **query_dict, **sum_count, }
     return render(request, 'management/analysis.html', content)
 
     # return HttpResponse('It is OK page ')

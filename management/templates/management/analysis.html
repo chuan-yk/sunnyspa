@@ -45,46 +45,101 @@
                                         <td>服务技师:</td>
                                         <td>
                                             <select id="id_massagist" name="massagist" class="form-control static dirty" >
-
-                                                <option checked="true" value='' >全部</option>
-                                                <option value="laila">laila</option>
-                                                <option value="zhel">zhel</option>
-                                                <option value="120">120</option>
+                                                {% if massagist %}
+                                                    <option value='' >全部</option>
+                                                    {% for ma in massagist_list %}
+                                                        {% ifequal ma massagist %}
+                                                            <option selected="selected" value="{{ ma }}">{{ ma }}</option>
+                                                        {% else %}
+                                                            <option value="{{ ma }}">{{ ma }}</option>
+                                                        {% endifequal %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <option selected="selected" value='' >全部</option>
+                                                    {% for ma in massagist_list %}
+                                                        <option value="{{ ma }}">{{ ma }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
                                             </select>
                                         </td>
                                         <td>&nbsp&nbsp支付方式:</td>
                                         <td>
                                             <select id="id_payment" name="payment" class="form-control static dirty" >
-                                                <option checked="true" value='' >全部</option>
-                                                <option value="laila">laila</option>
-                                                <option value="zhel">zhel</option>
-                                                <option value="120">120</option>
+                                                {% if payment %}
+                                                    <option value='' >全部</option>
+                                                    {% for pa in payment_list %}
+                                                        {% ifequal pa payment %}
+                                                            <option selected="selected" value="{{ pa }}">{{ pa }}</option>
+                                                        {% else %}
+                                                            <option value="{{ pa }}">{{ pa }}</option>
+                                                        {% endifequal %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <option selected="selected" value='' >全部</option>
+                                                    {% for pa in payment_list %}
+                                                        <option value="{{ pa }}">{{ pa }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
                                             </select>
                                         </td>
                                         <td >&nbsp&nbsp服务选项:</td>
                                         <td>
                                             <select id="id_items" name="items" class="form-control static dirty" >
-                                                <option checked="true" value=''  >全部</option>
-                                                <option value="A1">A1</option>
-                                                <option value="A2">A2</option>
+                                                {% if items %}
+                                                    <option value='' >全部</option>
+                                                    {% for it in items_list %}
+                                                        {% ifequal it items %}
+                                                            <option selected="selected" value="{{ it }}">{{ it }}</option>
+                                                        {% else %}
+                                                            <option value="{{ it }}">{{ it }}</option>
+                                                        {% endifequal %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <option selected="selected" value='' >全部</option>
+                                                    {% for it in items_list %}
+                                                        <option value="{{ it }}">{{ it }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
                                             </select>
                                         </td>
                                         <td >&nbsp&nbsp服务时长:</td>
                                         <td>
                                             <select id="id_duration" name="duration" class="form-control static dirty" >
-                                                <option value='' checked="true">全部</option>
-                                                <option value="60">60</option>
-                                                <option value="90">90</option>
-                                                <option value="120">120</option>
+                                                {% if duration %}
+                                                    <option value='' >全部</option>
+                                                    {% for du in duration_list %}
+                                                        {% ifequal du duration %}
+                                                            <option selected="selected" value="{{ du }}">{{ du }}</option>
+                                                        {% else %}
+                                                            <option value="{{ du }}">{{ du }}</option>
+                                                        {% endifequal %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <option selected="selected" value='' >全部</option>
+                                                    {% for du in duration_list %}
+                                                        <option value="{{ du }}">{{ du }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
                                             </select>
                                         </td>
                                         <td >&nbsp&nbsp完成状态:</td>
                                         <td>
                                             <select id="id_order_status" name="order_status" class="form-control static dirty" >
-                                                <option value=>全部</option>
-                                                <option value="60">60</option>
-                                                <option value="90">90</option>
-                                                <option value="120">120</option>
+                                                {% if order_status %}
+                                                    <option value='' >全部</option>
+                                                    {% for od in order_status_list %}
+                                                        {% ifequal od order_status %}
+                                                            <option selected="selected" value="{{ od }}">{{ od }}</option>
+                                                        {% else %}
+                                                            <option value="{{ od }}">{{ od }}</option>
+                                                        {% endifequal %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <option selected="selected" value='' >全部</option>
+                                                    {% for od in order_status_list %}
+                                                        <option value="{{ od }}">{{ od }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
                                             </select>
                                         </td>
                                     </tr>
@@ -103,30 +158,48 @@
                                         </td>
                                         <td>&nbsp&nbsp&nbsp&nbsp额外车费:</td>
                                         <td>
-                                            <input type="radio" name="fee" value="-1" checked="true">不区分
-                                            <input type="radio" name="fee" value="0">无
-                                            <input type="radio" name="fee" value="1">有
+                                            <input type="radio" name="fee" value="-1"
+                                                    {% ifequal fee '-1' %} checked="true" {% endifequal %} >不区分
+                                            <input type="radio" name="fee" value="0"
+                                                    {% ifequal fee '0' %} checked="true" {% endifequal %} >无
+                                            <input type="radio" name="fee" value="1"
+                                                    {% ifequal fee '1' %} checked="true" {% endifequal %} >有
                                         </td>
                                         <td>&nbsp&nbsp是否打折:&nbsp</td>
                                         <td>&nbsp
-                                            <input type="radio" name="discount" value="-1" checked="true">不区分
-                                            <input type="radio" name="discount" value="0">无
-                                            <input type="radio" name="discount" value="1">有
+                                            <input type="radio" name="discount" value="-1"
+                                                    {% ifequal discount '-1' %} checked="true" {% endifequal %} >不区分
+                                            <input type="radio" name="discount" value="0"
+                                                    {% ifequal discount '0' %} checked="true" {% endifequal %} >无
+                                            <input type="radio" name="discount" value="1"
+                                                    {% ifequal discount '1' %} checked="true" {% endifequal %} >有
                                         </td>
                                         <td>&nbsp&nbsp&nbsp&nbsp账户余额:&nbsp&nbsp</td>
                                         <td>
-                                            <input type="radio" name="blance" value="-1" checked="true">全部
-                                            <input type="radio" name="blance" value="0">无余额
-                                            <input type="radio" name="blance" value="1">有余额
+                                            <input type="radio" name="blance" value="-1"
+                                                    {% ifequal blance '-1' %} checked="true" {% endifequal %} >全部
+                                            <input type="radio" name="blance" value="0"
+                                                    {% ifequal blance '0' %} checked="true" {% endifequal %} >无余额
+                                            <input type="radio" name="blance" value="1"
+                                                    {% ifequal blance '1' %} checked="true" {% endifequal %} >有余额
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                                 <div class="col-md-12">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3">
+                                        <div class="card-actionbar-row">
+                                            <a href="{% url 'management_url_site:analysis' %}" class="btn btn-flat btn-primary ink-reaction" ><span class="title">重置查询</span></a>
+                                        </div>
 
-                                    <div class="card-actionbar-row">
-                                        <input type="submit" class="btn btn-flat btn-primary ink-reaction"
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card-actionbar-row">
+                                            <input type="submit" class="btn btn-flat btn-primary ink-reaction"
                                                value="开始查询">
+                                        </div>
                                     </div>
                                 </div>
                             </form>
