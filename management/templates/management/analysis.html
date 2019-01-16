@@ -206,31 +206,56 @@
                             <hr>
                             <hr />
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <header>服务统计</header>
+                                <div class="col-md-12">
+                                    <h4>总结： {{ start_date }} 至 {{ end_date }} 汇总信息</h4>
                                     <table class="table">
                                         <tbody>
                                             <tr>
-                                                <th style="width: 240px" class="text-center">
-                                                    用户人数:&nbsp&nbsp&nbsp&nbsp
-                                                    <span style="color: #f00;">88</span> 人/次</th>
-                                                <th style="width: 20px"></th>
-                                                <th style="width: 450px" class="text-center">
-                                                    信息缺失用户数:
-                                                    <span style="color: #f00;">0{{ content.pk__count }}</span> 人/次</th>
-                                                <th style="width: 20px"></th>
+                                                <th  style="width: 300px" class="text-center" >
+                                                    总收入:&nbsp&nbsp&nbsp&nbsp
+                                                    </th>
+                                                <th style="width: 300px" class="text-center" >
+                                                    <span style="color: #f00;">{{ income }}</span> 比索</th>
+                                                <th style="width: 300px"  class="text-center">
+                                                    员工提成支出:
+                                                </th>
+                                                <th style="width: 300px" class="text-center" >
+                                                    <span style="color: #f00;">{{ commission_sums }}</span> 比索
+                                                </th>
+                                                <th style="width: 300px" class="text-center">
+                                                    服务单数:&nbsp&nbsp&nbsp&nbsp
+                                                </th>
+                                                <th style="width: 300px" class="text-center" >
+                                                    <span style="color: #f00;">{{ service_times }}</span> 人/次
+                                                </th>
+                                                <th style="width: 300px" class="text-center" >
+                                                    客户数:&nbsp&nbsp&nbsp&nbsp
+                                                </th>
+                                                <th style="width: 300px" class="text-center" >
+                                                    <span style="color: #f00;">{{ customer_count }}</span> 人
+                                                </th>
+                                                <th style="width: 500px" class="text-center" >
+                                                    老客户数(消费3次及以上):&nbsp&nbsp&nbsp&nbsp
+
+                                                </th>
+                                                <th style="width: 300px" class="text-center" >
+                                                    <span style="color: #f00;">{{ old_customer_count }}</span> 人
+                                                </th>
                                             </tr>
                                             <tr>
-                                                <th style="width: 150px" class="text-center">新用户数: <span style="color: #f00;">{{ content.pk__count }}</span> 人/次</th>
-                                                <th style="width: 150px"></th>
-                                                <th style="width: 150px" class="text-center">好评次数: <span style="color: #f00;">{{ content.pk__count }}</span> 人/次</th>
-                                                <th style="width: 350px"></th>
+                                                <td class="text-center" >员工业绩:&nbsp</td>
+                                                <td class="text-center" >--</td>
+                                                <td class="text-center" >提成总数:&nbsp</td>
+                                                <td class="text-center" >--</td>
+                                                <td class="text-center" >服务单数:&nbsp</td>
+                                                <td class="text-center" >--</td>
+                                                <td class="text-center" >客户数</td>
+                                                <td class="text-center" >--</td>
+                                                <td class="text-center" ></td>
+                                                <td class="text-center" ></td>
                                             </tr>
                                             <tr>
-                                                <th style="width: 150px" class="text-center">消费达用户数: <span style="color: #f00;">{{ content.pk__count }}</span> 人/次</th>
-                                                <th style="width: 150px"></th>
-                                                <th style="width: 150px" class="text-center">反馈赠送次数: <span style="color: #f00;">{{ content.pk__count }}</span> 人/次</th>
-                                                <th style="width: 350px"></th>
+{#                                                {% for  %} }}#}
                                             </tr>
                                         </tbody>
                                     </table>

@@ -27,7 +27,7 @@ class StaffInfo(models.Model):
     work_status = models.IntegerField(default=1, help_text='在职状态： 1-在职， 0-离职， 2-长假')
     birthday = models.DateField(null=True, blank=True, help_text='生日')
     salary = models.IntegerField(default=0, help_text='日薪资，敏感信息可不录入')
-    commission = models.IntegerField(default=60, help_text='任务提成')
+    commission = models.IntegerField(default=60, help_text='任务提成金额')
     overtime_pay = models.IntegerField(default=0, null=True, help_text='加班费,时薪的两倍，单位小时')
     daily_allowance = models.IntegerField(default=0, help_text='日常补助， 如交通补助')
     half_month_payment = models.IntegerField(default=0, help_text="停车费、油费等")
@@ -115,6 +115,7 @@ class Massage(models.Model):
     massagist = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, related_name='massagist_set', null=True, blank=True,
                                   help_text='按摩师')
     tip = models.IntegerField(default=0, help_text='收取小费')
+    commission = models.IntegerField(default=0, help_text='实际提成金额')
     fee = models.IntegerField(default=0, help_text='其他花费，如打车费用')
     order_status = models.CharField(choices=order_status_options, max_length=200, default='完成|未迟到', help_text='完成状态')
     note = models.CharField(default='-', blank=True, max_length=500, help_text="备注")

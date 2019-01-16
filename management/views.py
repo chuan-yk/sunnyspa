@@ -38,11 +38,11 @@ def ordersindex(request):
     """订单页"""
     handler_query_result = handler_query(request)
     orders = Massage.objects.filter(*handler_query_result['query_conditions']).order_by('-pk')
+    # 返回结果计数
+    orders_count = len(orders)
     # 性能控制，截断默认返回值数据量
     if len(orders) >= 150:
         orders = orders[:150]
-    # 返回结果计数
-    orders_count = orders.count()
     content = {'massagist_list': handler_query_result['massagist_list'],
                'payment_list': handler_query_result['payment_list'],
                'items_list': handler_query_result['items_list'],
@@ -222,21 +222,59 @@ def handler_query(request):
             'order_status_list': order_status_list, }
 
 
+def last_day_of_month(any_day):
+    next_month = any_day.replace(day=28) + datetime.timedelta(days=4)  # this will never fail
+    return next_month - datetime.timedelta(days=next_month.day)
+
+
+def get_months(start_date, end_date):
+    """接收日期参数datetime.date, 返回月份对应区间字典"""
+    months = dict()
+    while start_date <= end_date:
+        last_day_of_start_month = last_day_of_month(start_date)
+        if last_day_of_start_month < end_date:
+            months['{}'.format(start_date.strftime('%Y-%m'))] = {'start_date': start_date,
+                                                                 'end_date': last_day_of_start_month}
+        else:
+            months['{}'.format(start_date.strftime('%Y-%m'))] = {'start_date': start_date,
+                                                                 'end_date': end_date}
+        start_date = last_day_of_start_month + datetime.timedelta(days=1)
+    return months
+
+
+def unitl_query(start_date, end_date):
+    """指定时间数据查询， 返回字典数据"""
+    query_result = dict()
+    orders = Massage.objects.filter(Q(service_date__gte=start_date), Q(service_date__lte=end_date))
+    query_result.update(orders.aggregate(Sum('amount'), Sum('commission'), Count('pk')))
+    query_result['income'] = orders.aggregate(Sum('amount'))['amount__sum']
+
+
+def interval_query(sdate, edate):
+    """接收日期参数, 格式‘%Y-%m-%d’，按月返回每月区间数据"""
+    sdate_list, edate_list = list(map(int, sdate.split('-'))), list(map(int, edate.split('-')))
+    start_date, end_date = datetime.date(*sdate_list), datetime.date(*edate_list)
+    months = get_months(start_date, end_date)
+    bucket_all = {'all': {'start_date': start_date, 'end_date': end_date}, 'months': months, },
+    return bucket_all
+
+
 @login_required
 def ordersanalysis(request):
     """服务订单分析"""
     handler_query_result = handler_query(request)
     orders = Massage.objects.filter(*handler_query_result['query_conditions'])
-    loger.info("func ordersanalysis, query orders count: {} result id : {}".format(len(orders),
-                                                                                   orders.values_list('pk', flat=True)))
-    sum_count = orders.aggregate(Sum('amount'), Count('pk'), )
+    loger.info("func ordersanalysis, query orders count: {} result id : {}".format(len(orders), orders.values_list('pk', flat=True)))
+    monthly_data = interval_query(handler_query_result['query_dict']['start_date'],
+                                  handler_query_result['query_dict']['end_date'],)
+    print(monthly_data)
     # template - content
     content = {'massagist_list': handler_query_result['massagist_list'],
                'payment_list': handler_query_result['payment_list'],
                'items_list': handler_query_result['items_list'],
                'duration_list': handler_query_result['duration_list'],
                'order_status_list': handler_query_result['order_status_list'],
-               **handler_query_result['query_dict'], **sum_count, }
+               **handler_query_result['query_dict'], }
     # content = {'massagist_list': massagist_list, 'payment_list': payment_list, 'items_list': items_list,
     #            'duration_list': duration_list, 'order_status_list': order_status_list, **query_dict, **sum_count, }
     return render(request, 'management/analysis.html', content)
