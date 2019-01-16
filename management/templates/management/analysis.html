@@ -204,104 +204,41 @@
                                 </div>
                             </form>
                             <hr>
-                            <hr>
-
-
+                            <hr />
                             <div class="row">
-                                <div class="col-sm-4">
-                                    <header>用户信息</header>
-                                    <div class="form-group floating-label">
-                                        {#                                            {{ form.name | add_class:'form-control' }}#}
-                                        <label for="regular2">客户姓名</label>
-                                    </div>
-                                    <div class="form-group floating-label">
-                                        {#                                            {{ form.uin | add_class:'form-control' }}#}
-                                        <label for="regular2">客户编号</label>
-                                    </div>
-                                    <div class="form-group floating-label">
-                                        {#                                            {{ form.phone | add_class:'form-control' }}#}
-                                        <label for="regular2">客户手机号码</label>
-                                    </div>
-                                    <div class="form-group floating-label">
-                                        {#                                            {{ form.address | add_class:'form-control' | attr:'rows:2' }}#}
-                                        <label for="textarea2">Address</label>
-                                    </div>
+                                <div class="col-lg-6">
+                                    <header>服务统计</header>
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width: 240px" class="text-center">
+                                                    用户人数:&nbsp&nbsp&nbsp&nbsp
+                                                    <span style="color: #f00;">88</span> 人/次</th>
+                                                <th style="width: 20px"></th>
+                                                <th style="width: 450px" class="text-center">
+                                                    信息缺失用户数:
+                                                    <span style="color: #f00;">0{{ content.pk__count }}</span> 人/次</th>
+                                                <th style="width: 20px"></th>
+                                            </tr>
+                                            <tr>
+                                                <th style="width: 150px" class="text-center">新用户数: <span style="color: #f00;">{{ content.pk__count }}</span> 人/次</th>
+                                                <th style="width: 150px"></th>
+                                                <th style="width: 150px" class="text-center">好评次数: <span style="color: #f00;">{{ content.pk__count }}</span> 人/次</th>
+                                                <th style="width: 350px"></th>
+                                            </tr>
+                                            <tr>
+                                                <th style="width: 150px" class="text-center">消费达用户数: <span style="color: #f00;">{{ content.pk__count }}</span> 人/次</th>
+                                                <th style="width: 150px"></th>
+                                                <th style="width: 150px" class="text-center">反馈赠送次数: <span style="color: #f00;">{{ content.pk__count }}</span> 人/次</th>
+                                                <th style="width: 350px"></th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="col-sm-8">
-                                    <header>订单信息</header>
-                                    <div class="form-group">
-                                        {#                                            {{ form.service_date  | add_class:'form-control' }}#}
-                                        <label for="regular2">服务日期</label>
-                                    </div>
-                                    <div class="form-group floating-label">
-                                        {#                                            {{ form.service_type | add_class:'form-control' | attr:'rows:2' }}#}
-                                        <label for="textarea2">消费项目</label>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group floating-label">
-                                                {#                                                    {{ form.payment_option| add_class:'form-control' }}#}
-                                                <label for="select2">支付方式</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="form-group floating-label">
-                                                {#                                                    {{ form.amount | add_class:'form-control' }}#}
-                                                <label for="regular2">金额</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="form-group floating-label">
-                                                {#                                                    {{ form.fee | add_class:'form-control' }}#}
-                                                <label for="regular2">其他话费(如打车费用)</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group floating-label">
-                                                {#                                                    {{ form.massagist| add_class:'form-control' }}#}
-                                                <label for="select2">服务技师</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="form-group floating-label">
-                                                {#                                                    {{ form.tip | add_class:'form-control' }}#}
-                                                <label for="regular2">小费</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="form-group floating-label">
-                                                {#                                                    {{ form.discount | add_class:'form-control' }}#}
-                                                <label for="regular2">优惠</label>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="col-lg-6">
+                                    XXX
                                 </div>
-                                <div class="col-md-12">
-                                    <hr>
-                                    <label class="radio-inline radio-styled col-sm-2">
-                                        <b>订单状态:</b>
-                                    </label>
-                                    <div class="col-md-10">
-                                        {#                                            {% for radio in form.order_status %}#}
-                                        {#                                                <label class="radio-inline radio-styled">#}
-                                        {#                                                    {{ radio }}#}
-                                        {#                                                </label>#}
-                                        {#                                            {% endfor %}#}
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <hr>
-                                    <b>备注:</b>
-                                    <div class="form-group floating-label">
-                                        {#                                            {{ form.note | add_class:'form-control' | attr:'rows:2' }}#}
-                                        <label for="textarea2">备注</label>
-                                    </div>
-                                </div>
-
                             </div>
-
                         </div><!--end .card-body -->
                     </div><!--end .card -->
                 </div><!--end .col -->

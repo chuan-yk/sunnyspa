@@ -73,12 +73,14 @@ class SalaryRecord(models.Model):
 class CustomerInfo(models.Model):
     """顾客信息"""
     name = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一多个名称用'|'隔开")
-    phone = models.CharField(max_length=20, default='_', help_text="电话号码(唯一)")
+    phone = models.CharField(max_length=20, default='_', unique=True, help_text="电话号码(唯一)")
     address = models.TextField(max_length=500, default='_', help_text="登记地址, 多个地址以'|'隔开")
     service_times = models.IntegerField(default=0, help_text="服务次数")
     total_cost = models.IntegerField(default=0, help_text="总共消费")
     blance = models.IntegerField(default=0, help_text="充值余额")
     blance_changedate = models.DateField(null=True, help_text="余额更新日期")
+    gifts_times = models.IntegerField(default=0, help_text="免费赠送次数")
+    feedback_times = models.IntegerField(default=0, help_text="消费达N次，赠送次数")
     note = models.CharField(max_length=500, help_text="备注信息")
 
     def __str__(self):

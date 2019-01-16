@@ -36,8 +36,20 @@ def index(request):
 @login_required
 def ordersindex(request):
     """订单页"""
-    orders = Massage.objects.all().order_by('-pk')[:100]
-    return render(request, 'management/ordersindex.html', {'orders': orders})
+    handler_query_result = handler_query(request)
+    orders = Massage.objects.filter(*handler_query_result['query_conditions']).order_by('-pk')
+    # 性能控制，截断默认返回值数据量
+    if len(orders) >= 150:
+        orders = orders[:150]
+    # 返回结果计数
+    orders_count = orders.count()
+    content = {'massagist_list': handler_query_result['massagist_list'],
+               'payment_list': handler_query_result['payment_list'],
+               'items_list': handler_query_result['items_list'],
+               'duration_list': handler_query_result['duration_list'], 'orders_count': orders_count,
+               'order_status_list': handler_query_result['order_status_list'], 'orders': orders,
+               **handler_query_result['query_dict'], }
+    return render(request, 'management/ordersindex.html', content)
 
 
 @login_required
@@ -89,9 +101,8 @@ def ordernew(request):
         return render(request, 'management/edit.html', {'form': form})
 
 
-@login_required
-def ordersanalysis(request):
-    """服务订单分析"""
+def handler_query(request):
+    """复用方法, 返回值： {'query_dict': 查询条件， 'query_conditions': 合并后的Q实例, 'select_list': select_list} """
     query_dict = {'name': '', 'exact_name': '', 'phone': '', 'address': '', 'note': '', 'massagist': '', 'payment': '',
                   'items': '', 'duration': '', 'order_status': '', 'fee': '', 'blance': '', 'discount': '',
                   'start_date': '', 'end_date': '', }
@@ -111,28 +122,33 @@ def ordersanalysis(request):
     # 客户姓名查询条件, 精准查询
     if request.GET.get('exact_name'):
         exact_name = request.GET['exact_name'].strip()
-        query_conditions.append(Q(name__exact=exact_name))
-        query_dict['exact_name'] = exact_name
+        if exact_name:  # 排除''
+            query_conditions.append(Q(name__exact=exact_name))
+            query_dict['exact_name'] = exact_name
     # 客户姓名查询条件, 模糊查询
     if request.GET.get('name'):
         name = request.GET['name'].strip()
-        query_conditions.append(Q(name__icontains=name))
-        query_dict['name'] = name
+        if name:  # 排除''
+            query_conditions.append(Q(name__icontains=name))
+            query_dict['name'] = name
     # 客户电话号码查询条件, 模糊查询
     if request.GET.get('phone'):
         phone = request.GET['phone'].strip()
-        query_conditions.append(Q(phone__icontains=phone))
-        query_dict['phone'] = phone
+        if phone:  # 排除''
+            query_conditions.append(Q(phone__icontains=phone))
+            query_dict['phone'] = phone
     # 地址查询，模糊条件
     if request.GET.get('address'):
         address = request.GET['address'].strip()
-        query_conditions.append(Q(address__icontains=address))
-        query_dict['address'] = address
+        if address:
+            query_conditions.append(Q(address__icontains=address))
+            query_dict['address'] = address
     # 备注信息查询，模糊条件
     if request.GET.get('note'):
         note = request.GET['note'].strip()
-        query_conditions.append(Q(note__icontains=note))
-        query_dict['note'] = note
+        if note:
+            query_conditions.append(Q(note__icontains=note))
+            query_dict['note'] = note
     # 员工查询条件
     if request.GET.get('massagist'):
         massagist = request.GET['massagist'].strip()
@@ -191,19 +207,36 @@ def ordersanalysis(request):
         else:
             pass
         query_dict['discount'] = discount_tag
-    loger.info("ordersanalysis query_conditions : {}".format(query_conditions))
-    orders = Massage.objects.filter(*query_conditions)
-    loger.info("ordersanalysis, query oders count: {} result id : {}".format(len(orders), orders.values_list('pk', flat=True)))
-    sum_count = orders.aggregate(Sum('amount'), Count('pk'), )
+    loger.debug("func  handler_query analysis query_conditions : {}".format(query_conditions))
+    loger.debug("func  handler_query analysis query_dict : {}".format(query_dict))
     # select对应下拉框列表
     massagist_list = StaffInfo.objects.all().values_list('name', flat=True)
     payment_list = Massage.objects.all().values_list("payment_option", flat=True).distinct().order_by()
     items_list = Massage.objects.all().values_list("service_type__items", flat=True).distinct().order_by()
     duration_list = Massage.objects.all().values_list("service_type__duration", flat=True).distinct().order_by()
     order_status_list = Massage.objects.all().values_list("order_status", flat=True).distinct().order_by()
-    # template - content
-    content = {'massagist_list': massagist_list, 'payment_list': payment_list, 'items_list': items_list,
-               'duration_list': duration_list, 'order_status_list': order_status_list, **query_dict, **sum_count, }
-    return render(request, 'management/analysis.html', content)
+    loger.debug("""func  handler_query analysis massagist_list: {}, payment_list: {}, items_list:{}, duration_list: {}, order_status_list: {}""".format(
+            massagist_list, payment_list, items_list, duration_list, order_status_list))
+    return {'query_dict': query_dict, 'query_conditions': query_conditions, 'massagist_list': massagist_list,
+            'payment_list': payment_list, 'items_list': items_list, 'duration_list': duration_list,
+            'order_status_list': order_status_list, }
 
-    # return HttpResponse('It is OK page ')
+
+@login_required
+def ordersanalysis(request):
+    """服务订单分析"""
+    handler_query_result = handler_query(request)
+    orders = Massage.objects.filter(*handler_query_result['query_conditions'])
+    loger.info("func ordersanalysis, query orders count: {} result id : {}".format(len(orders),
+                                                                                   orders.values_list('pk', flat=True)))
+    sum_count = orders.aggregate(Sum('amount'), Count('pk'), )
+    # template - content
+    content = {'massagist_list': handler_query_result['massagist_list'],
+               'payment_list': handler_query_result['payment_list'],
+               'items_list': handler_query_result['items_list'],
+               'duration_list': handler_query_result['duration_list'],
+               'order_status_list': handler_query_result['order_status_list'],
+               **handler_query_result['query_dict'], **sum_count, }
+    # content = {'massagist_list': massagist_list, 'payment_list': payment_list, 'items_list': items_list,
+    #            'duration_list': duration_list, 'order_status_list': order_status_list, **query_dict, **sum_count, }
+    return render(request, 'management/analysis.html', content)
