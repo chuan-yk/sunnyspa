@@ -242,12 +242,61 @@ def get_months(start_date, end_date):
     return months
 
 
-def unitl_query(start_date, end_date):
-    """指定时间数据查询， 返回字典数据"""
-    query_result = dict()
-    orders = Massage.objects.filter(Q(service_date__gte=start_date), Q(service_date__lte=end_date))
-    query_result.update(orders.aggregate(Sum('amount'), Sum('commission'), Count('pk')))
-    query_result['income'] = orders.aggregate(Sum('amount'))['amount__sum']
+def unit_query_staff(start_date, end_date, *additional_condition):
+    """指定时间参数，不定参数Q列表， 返回员工列表"""
+    filter_condition = [Q(service_date__gte=start_date), Q(service_date__lte=end_date), ] + list(additional_condition)
+    loger.debug("function unit_query_staff, parameter: {}, {} ; filter_condition: {} .".format(start_date, end_date,
+                                                                                               filter_condition))
+    return Massage.objects.values_list('massagist__name', flat=True).filter(*filter_condition).distinct()
+
+
+def unit_query_sums(start_date, end_date, *additional_condition):
+    """指定时间参数，不定参数Q列表， Sums, count dict"""
+    filter_condition = [Q(service_date__gte=start_date), Q(service_date__lte=end_date), ] + list(additional_condition)
+    loger.debug("function unit_query_staff, parameter: {}, {} ; filter_condition: {} .".format(start_date, end_date,
+                                                                                               filter_condition))
+    return Massage.objects.filter(*filter_condition).aggregate(Sum('amount'), Sum('commission'), Sum('tip'),
+                                                               Count('pk'))
+
+
+def unit_query_cus_count(start_date, end_date, *additional_condition):
+    """指定时间参数，不定参数Q列表， customer dict"""
+    filter_condition = [Q(service_date__gte=start_date), Q(service_date__lte=end_date), ] + list(additional_condition)
+    loger.debug("function unit_query_cus_count, parameter: {}, {} ; filter_condition: {} .".format(start_date, end_date,
+                                                                                                   filter_condition))
+    return Massage.objects.values('name').filter(*filter_condition).distinct().aggregate(Count('name'))
+
+
+def unit_query_staff_performance(start_date, end_date, *additional_condition):
+    """指定时间参数， 不定参数Q(staff)列表， 返回订单统计字典数据"""
+    filter_condition = [Q(service_date__gte=start_date), Q(service_date__lte=end_date), ] + list(additional_condition)
+    loger.debug("function unit_query_staff_performance, parameter: {}, {};".format(start_date, end_date) +
+                "filter_condition: {} .".format(filter_condition))
+    # 总收入amount__sum， 总提成数commission__sum， 小费总数tip__sum， 订单数pk__count
+    dict1 = unit_query_sums(start_date, end_date, *additional_condition)
+    # 总人数name__count
+    dict2 = unit_query_cus_count(start_date, end_date, *additional_condition)
+    loger.debug("unit_query_staff_performance, staff {}: ".format(additional_condition) +
+                "总收入, 总提成数, 小费总数, 订单数 {} ; 总人数 {}".format(dict1, dict2))
+    return {**dict1, **dict2}
+
+
+def unit_query_all(start_date, end_date, *additional_condition):
+    """指定时间参数，不定参数Q列表， 返回订单统计字典数据"""
+    filter_condition = [Q(service_date__gte=start_date), Q(service_date__lte=end_date), ] + list(additional_condition)
+    # 订单统计字典数据(总收入, 总提成数, 小费总数, 订单数, 人数)
+    dict1 = unit_query_staff_performance(start_date, end_date, *additional_condition)
+    # 活跃用户
+    orders = Massage.objects.filter(*filter_condition)
+    customer_list = orders.values('name', 'phone', 'uin__address').annotate(Count('phone'), Sum('amount'), Sum('tip'),
+                                                                            Sum('discount'), Sum('fee'))
+    customer_list = customer_list.order_by('-phone__count')
+    loger.debug("unit_query: 活跃用户 {}".format(customer_list))
+    query_result = {**dict1, 'customer_list': customer_list, }
+    return query_result
+
+
+
 
 
 def interval_query(sdate, edate):
@@ -255,7 +304,22 @@ def interval_query(sdate, edate):
     sdate_list, edate_list = list(map(int, sdate.split('-'))), list(map(int, edate.split('-')))
     start_date, end_date = datetime.date(*sdate_list), datetime.date(*edate_list)
     months = get_months(start_date, end_date)
-    bucket_all = {'all': {'start_date': start_date, 'end_date': end_date}, 'months': months, },
+    # 全部数据、每月数据
+    bucket_all = {'all': {'start_date': start_date, 'end_date': end_date}, 'months': months, }
+    # combine = lambda dt: dt.update(unit_query(dt['start_date'], dt['end_date'])) or dt
+
+    def combine(dt, func, *ad):
+        dt.update(func(dt['start_date'], dt['end_date'], *list(ad)))
+        return dt
+    # 补充查询条件
+    adc = [Q(order_status__contains="完成"), ]
+    # 更新 ALL 对应数据
+    bucket_all['all'] = combine(bucket_all['all'], unit_query_all, *adc)
+    # 更新 months 对应数据
+    for month in bucket_all['months']:
+        bucket_all['months'][month] = combine(bucket_all['months'][month], unit_query_all, *adc)
+    # 按员工计数
+    loger.debug("func interval_query analysis result: {}".format(bucket_all))
     return bucket_all
 
 
@@ -264,7 +328,8 @@ def ordersanalysis(request):
     """服务订单分析"""
     handler_query_result = handler_query(request)
     orders = Massage.objects.filter(*handler_query_result['query_conditions'])
-    loger.info("func ordersanalysis, query orders count: {} result id : {}".format(len(orders), orders.values_list('pk', flat=True)))
+    loger.info("func ordersanalysis, query orders count: {} result id : {}".format(len(orders),
+                                                                                   orders.values_list('pk', flat=True)))
     monthly_data = interval_query(handler_query_result['query_dict']['start_date'],
                                   handler_query_result['query_dict']['end_date'],)
     print(monthly_data)
