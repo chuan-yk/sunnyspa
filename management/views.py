@@ -264,7 +264,7 @@ def unit_query_cus_count(start_date, end_date, *additional_condition):
     filter_condition = [Q(service_date__gte=start_date), Q(service_date__lte=end_date), ] + list(additional_condition)
     loger.debug("function unit_query_cus_count, parameter: {}, {} ; filter_condition: {} .".format(start_date, end_date,
                                                                                                    filter_condition))
-    return Massage.objects.values('name').filter(*filter_condition).distinct().aggregate(Count('name'))
+    return Massage.objects.values('name', 'phone').filter(*filter_condition).distinct().aggregate(Count('name'))
 
 
 def unit_query_staff_performance(start_date, end_date, *additional_condition):
@@ -290,13 +290,10 @@ def unit_query_all(start_date, end_date, *additional_condition):
     orders = Massage.objects.filter(*filter_condition)
     customer_list = orders.values('name', 'phone', 'uin__address').annotate(Count('phone'), Sum('amount'), Sum('tip'),
                                                                             Sum('discount'), Sum('fee'))
-    customer_list = customer_list.order_by('-phone__count')
+    customer_list = customer_list.order_by('-phone__count')[:5]
     loger.debug("unit_query: 活跃用户 {}".format(customer_list))
     query_result = {**dict1, 'customer_list': customer_list, }
     return query_result
-
-
-
 
 
 def interval_query(sdate, edate):
@@ -305,7 +302,7 @@ def interval_query(sdate, edate):
     start_date, end_date = datetime.date(*sdate_list), datetime.date(*edate_list)
     months = get_months(start_date, end_date)
     # 全部数据、每月数据
-    bucket_all = {'all': {'start_date': start_date, 'end_date': end_date}, 'months': months, }
+    summary = {'all': {'start_date': start_date, 'end_date': end_date}, 'months': months, }
     # combine = lambda dt: dt.update(unit_query(dt['start_date'], dt['end_date'])) or dt
 
     def combine(dt, func, *ad):
@@ -314,13 +311,13 @@ def interval_query(sdate, edate):
     # 补充查询条件
     adc = [Q(order_status__contains="完成"), ]
     # 更新 ALL 对应数据
-    bucket_all['all'] = combine(bucket_all['all'], unit_query_all, *adc)
+    summary['all'] = combine(summary['all'], unit_query_all, *adc)
     # 更新 months 对应数据
-    for month in bucket_all['months']:
-        bucket_all['months'][month] = combine(bucket_all['months'][month], unit_query_all, *adc)
+    for month in summary['months']:
+        summary['months'][month] = combine(summary['months'][month], unit_query_all, *adc)
     # 按员工计数
-    loger.debug("func interval_query analysis result: {}".format(bucket_all))
-    return bucket_all
+    loger.debug("func interval_query analysis result: {}".format(summary))
+    return summary
 
 
 @login_required
@@ -330,16 +327,15 @@ def ordersanalysis(request):
     orders = Massage.objects.filter(*handler_query_result['query_conditions'])
     loger.info("func ordersanalysis, query orders count: {} result id : {}".format(len(orders),
                                                                                    orders.values_list('pk', flat=True)))
-    monthly_data = interval_query(handler_query_result['query_dict']['start_date'],
-                                  handler_query_result['query_dict']['end_date'],)
-    print(monthly_data)
+    summary = interval_query(handler_query_result['query_dict']['start_date'],
+                             handler_query_result['query_dict']['end_date'],)
+    print(summary)
     # template - content
     content = {'massagist_list': handler_query_result['massagist_list'],
                'payment_list': handler_query_result['payment_list'],
                'items_list': handler_query_result['items_list'],
                'duration_list': handler_query_result['duration_list'],
                'order_status_list': handler_query_result['order_status_list'],
-               **handler_query_result['query_dict'], }
-    # content = {'massagist_list': massagist_list, 'payment_list': payment_list, 'items_list': items_list,
-    #            'duration_list': duration_list, 'order_status_list': order_status_list, **query_dict, **sum_count, }
+               **handler_query_result['query_dict'],
+               **summary, }
     return render(request, 'management/analysis.html', content)

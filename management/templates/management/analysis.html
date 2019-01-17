@@ -215,48 +215,86 @@
                                                     总收入:&nbsp&nbsp&nbsp&nbsp
                                                     </th>
                                                 <th style="width: 300px" class="text-center" >
-                                                    <span style="color: #f00;">{{ income }}</span> 比索</th>
+                                                    <span style="color: #f00;">{{ all.amount__sum }}</span> 比索</th>
                                                 <th style="width: 300px"  class="text-center">
                                                     员工提成支出:
                                                 </th>
                                                 <th style="width: 300px" class="text-center" >
-                                                    <span style="color: #f00;">{{ commission_sums }}</span> 比索
+                                                    <span style="color: #f00;">{{ all.commission__sum }}</span> 比索
                                                 </th>
                                                 <th style="width: 300px" class="text-center">
                                                     服务单数:&nbsp&nbsp&nbsp&nbsp
                                                 </th>
                                                 <th style="width: 300px" class="text-center" >
-                                                    <span style="color: #f00;">{{ service_times }}</span> 人/次
+                                                    <span style="color: #f00;">{{ all.pk__count }}</span> 人/次
                                                 </th>
                                                 <th style="width: 300px" class="text-center" >
                                                     客户数:&nbsp&nbsp&nbsp&nbsp
                                                 </th>
                                                 <th style="width: 300px" class="text-center" >
-                                                    <span style="color: #f00;">{{ customer_count }}</span> 人
+                                                    <span style="color: #f00;">{{ all.name__count }}</span> 人
                                                 </th>
                                                 <th style="width: 500px" class="text-center" >
                                                     老客户数(消费3次及以上):&nbsp&nbsp&nbsp&nbsp
 
                                                 </th>
                                                 <th style="width: 300px" class="text-center" >
-                                                    <span style="color: #f00;">{{ old_customer_count }}</span> 人
+                                                    <span style="color: #f00;">{{ all.name__count }}</span> 人
                                                 </th>
                                             </tr>
                                             <tr>
-                                                <td class="text-center" >员工业绩:&nbsp</td>
-                                                <td class="text-center" >--</td>
-                                                <td class="text-center" >提成总数:&nbsp</td>
-                                                <td class="text-center" >--</td>
-                                                <td class="text-center" >服务单数:&nbsp</td>
-                                                <td class="text-center" >--</td>
-                                                <td class="text-center" >客户数</td>
-                                                <td class="text-center" >--</td>
-                                                <td class="text-center" ></td>
-                                                <td class="text-center" ></td>
+                                                <th class="text-center" >员工业绩:&nbsp</th>
+                                                <th class="text-center" >--</th>
+                                                <th class="text-center" >提成总数:&nbsp</th>
+                                                <th class="text-center" >--</th>
+                                                <th class="text-center" >服务单数:&nbsp</th>
+                                                <th class="text-center" >--</th>
+                                                <th class="text-center" >客户数</th>
+                                                <th class="text-center" >--</th>
+                                                <th class="text-center" ></th>
+                                                <th class="text-center" ></th>
                                             </tr>
                                             <tr>
-{#                                                {% for  %} }}#}
+                                                {% for st, stl in staff_list.items %}
+                                                    <td class="text-center" >&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                                        {{ st }}</td>
+                                                    <td class="text-center" >--</td>
+                                                    <td class="text-center" >提成总数:&nbsp</td>
+                                                    <td class="text-center" >--</td>
+                                                    <td class="text-center" >服务单数:&nbsp</td>
+                                                    <td class="text-center" >--</td>
+                                                    <td class="text-center" >客户数</td>
+                                                    <td class="text-center" >--</td>
+                                                    <td class="text-center" ></td>
+                                                    <td class="text-center" ></td>
+                                                {% endfor %}
                                             </tr>
+                                            <tr>
+                                                <th class="text-center" >活跃客户统计:&nbsp</th>
+                                                <th class="text-center" >手机号:&nbsp</th>
+                                                <th class="text-center" >客户名(以次数排名)&nbsp</th>
+                                                <th class="text-center" >消费次数:&nbsp</th>
+                                                <th class="text-center" >消费总金额:</th>
+                                                <th class="text-center" >优惠总金额:</th>
+                                                <th class="text-center" >打车费用:</th>
+                                                <th class="text-center" >小费总计:</th>
+                                                <th class="text-center" >住址:&nbsp</th>
+                                                <th class="text-center" ></th>
+                                            </tr>
+                                            {% for cst in all.customer_list %}
+                                                <tr>
+                                                    <th class="text-center" >第 {{ forloop.counter }} 名</th>
+                                                    <th class="text-center" >{{ cst.phone }}</th>
+                                                    <th class="text-center" >{{ cst.name }}</th>
+                                                    <th class="text-center" >{{ cst.phone__count }}</th>
+                                                    <th class="text-center" >{{ cst.amount__sum }}</th>
+                                                    <th class="text-center" >{{ cst.discount__sum }}</th>
+                                                    <th class="text-center" >{{ cst.fee__sum }}</th>
+                                                    <th class="text-center" >{{ cst.tip__sum }}</th>
+                                                    <th class="text-center" >{{ cst.uin__address }}</th>
+                                                    <th class="text-center" ></th>
+                                                </tr>
+                                            {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
