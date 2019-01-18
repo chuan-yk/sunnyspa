@@ -23,5 +23,6 @@ class MassageForm(ModelForm):
     class Meta:
         model = Massage
         fields = '__all__'
+        # fields = ['']
         widgets = {
             'service_date': forms.DateInput(attrs={'type': 'date'})}  # 修改template input字段类型

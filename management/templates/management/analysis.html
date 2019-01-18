@@ -302,8 +302,7 @@
                                             <th class="text-center">优惠总金额:</th>
                                             <th class="text-center">打车费用:</th>
                                             <th class="text-center">小费总计:</th>
-                                            <th class="text-center">住址:&nbsp</th>
-                                            <th class="text-center"></th>
+                                            <th class="text-center" colspan="2" >住址:&nbsp</th>
                                         </tr>
                                         {% for cst in all.customer_list %}
                                             <tr>
@@ -315,8 +314,7 @@
                                                 <th class="text-center">{{ cst.discount__sum }} ₱</th>
                                                 <th class="text-center">{{ cst.fee__sum }}</th>
                                                 <th class="text-center">{{ cst.tip__sum }} ₱</th>
-                                                <th class="text-center">{{ cst.uin__address }}</th>
-                                                <th class="text-center"></th>
+                                                <th class="text-center" colspan="2">{{ cst.uin__address }}</th>
                                             </tr>
                                         {% endfor %}
                                         </tbody>
@@ -405,8 +403,7 @@
                                                 <th class="text-center">优惠总金额:</th>
                                                 <th class="text-center">打车费用:</th>
                                                 <th class="text-center">小费总计:</th>
-                                                <th class="text-center">住址:&nbsp</th>
-                                                <th class="text-center"></th>
+                                                <th class="text-center" colspan="2">住址:&nbsp</th>
                                             </tr>
                                             {% for cst in mov.customer_list %}
                                                 <tr>
@@ -418,8 +415,7 @@
                                                     <th class="text-center">{{ cst.discount__sum }} ₱</th>
                                                     <th class="text-center">{{ cst.fee__sum }}</th>
                                                     <th class="text-center">{{ cst.tip__sum }} ₱</th>
-                                                    <th class="text-center">{{ cst.uin__address }}</th>
-                                                    <th class="text-center"></th>
+                                                    <th class="text-center" colspan="2" >{{ cst.uin__address }}</th>
                                                 </tr>
                                             {% endfor %}
                                             </tbody>
