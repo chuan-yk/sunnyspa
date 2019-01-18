@@ -192,7 +192,7 @@ LOGGING = {
         },
         'runlog': {
             'handlers': ['run_handler'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     },
