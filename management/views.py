@@ -90,7 +90,8 @@ def ordernew(request):
                 else:
                     return redirect('/orders', messages.error(request, '更新订单失败', 'alert-danger'))
             else:
-                loger.error(form.is_valid())
+                err = form.is_valid
+                loger.error('func ordernew, error reason : form.is_valid {}'.format(form.is_valid()))
                 return redirect('/orders', messages.error(request, '输入数据格式不正确', 'alert-danger'))
         except Exception as e:
             loger.error(e)
@@ -207,7 +208,7 @@ def handler_query(request):
         else:
             pass
         query_dict['discount'] = discount_tag
-    loger.info("func  handler_query analysis query_conditions : {}".format(query_conditions))
+    loger.info("func  handler_query url: orders|analysis query_conditions : {}".format(query_conditions))
     loger.debug("func  handler_query analysis query_dict : {}".format(query_dict))
     # select对应下拉框列表
     massagist_list = StaffInfo.objects.all().values_list('name', flat=True)
@@ -215,7 +216,7 @@ def handler_query(request):
     items_list = Massage.objects.all().values_list("service_type__items", flat=True).distinct().order_by()
     duration_list = Massage.objects.all().values_list("service_type__duration", flat=True).distinct().order_by()
     order_status_list = Massage.objects.all().values_list("order_status", flat=True).distinct().order_by()
-    loger.debug("func  handler_query analysis massagist_list: {},".format(massagist_list, ) +
+    loger.debug("func  handler_query ur:analysis massagist_list: {},".format(massagist_list, ) +
                 "payment_list: {}, ".format(payment_list, ) + "items_list:{}, ".format(items_list) +
                 "duration_list: {}, order_status_list: {}".format(duration_list, order_status_list))
     return {'query_dict': query_dict, 'query_conditions': query_conditions, 'massagist_list': massagist_list,

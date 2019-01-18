@@ -108,7 +108,7 @@ class Massage(models.Model):
     phone = models.CharField(max_length=20, default='_', help_text="电话号码")
     address = models.TextField(max_length=500, default='_', help_text="登记地址")
     service_date = models.DateField(null=True, blank=True, help_text="服务时间，以工作日为准")
-    service_type = models.ForeignKey(ServiceMenu, null=True, on_delete=models.SET_NULL, help_text='服务类型')
+    service_type = models.ForeignKey(ServiceMenu, null=True, blank=True, on_delete=models.SET_NULL, help_text='服务类型')
     payment_option = models.CharField(choices=payment_choice, max_length=200, default='比索现金', help_text='付款方式')
     amount = models.IntegerField(default=0, help_text='实收金额')
     discount = models.IntegerField(default=0, help_text='优惠金额')
