@@ -223,7 +223,7 @@
                             <hr/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h4 style="color: #f00;" >总结： {{ start_date }} 至 {{ end_date }} 汇总信息</h4>
+                                    <h4 style="color: #f00;">总结： {{ start_date }} 至 {{ end_date }} 汇总信息</h4>
                                     <table class="table">
                                         <tbody>
                                         <tr>
@@ -278,8 +278,8 @@
                                             <th class="text-center">小费总计:&nbsp</th>
                                             <th class="text-center"> 比索 ₱</th>
                                         </tr>
-                                        <tr>
-                                            {% for st, stvalue in all.staff_dict.items %}
+                                        {% for st, stvalue in all.staff_dict.items %}
+                                            <tr>
                                                 <td class="text-right">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                                     {{ st }}</td>
                                                 <td class="text-center">{{ stvalue.amount__sum }} ₱</td>
@@ -291,8 +291,8 @@
                                                 <td class="text-center">{{ stvalue.name__count }}</td>
                                                 <td class="text-center">小费总计:&nbsp</td>
                                                 <td class="text-center">{{ stvalue.tip__sum }} ₱</td>
-                                            {% endfor %}
-                                        </tr>
+                                            </tr>
+                                        {% endfor %}
                                         <tr>
                                             <th class="text-center">活跃客户统计:&nbsp<br>(以次数排名)</th>
                                             <th class="text-center">手机号:&nbsp</th>
@@ -302,7 +302,7 @@
                                             <th class="text-center">优惠总金额:</th>
                                             <th class="text-center">打车费用:</th>
                                             <th class="text-center">小费总计:</th>
-                                            <th class="text-center" colspan="2" >住址:&nbsp</th>
+                                            <th class="text-center" colspan="2">住址:&nbsp</th>
                                         </tr>
                                         {% for cst in all.customer_list %}
                                             <tr>
@@ -324,103 +324,105 @@
                                     {% for mo, mov in months.items %}
                                         {% ifnotequal mov.amount__sum None %}
                                             <div class="col-md-12">
-                                        <h4 style="color: #5AF8FF;" >按月份小结： {{ mo }} 汇总信息</h4>
-                                        <table class="table">
-                                            <tbody>
-                                            <tr>
-                                                <th style="width: 300px" class="text-center">
-                                                    总收入:&nbsp&nbsp&nbsp&nbsp
-                                                </th>
-                                                <th style="width: 300px" class="text-center">
+                                                <h4 style="color: #5AF8FF;">按月份小结： {{ mo }} 汇总信息</h4>
+                                                <table class="table">
+                                                    <tbody>
+                                                    <tr>
+                                                        <th style="width: 300px" class="text-center">
+                                                            总收入:&nbsp&nbsp&nbsp&nbsp
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
                                                     <span style="color: #f00;"
                                                           title="{{ mov.start_date }} 至 {{ mov.end_date }} 总收入">{{ mov.amount__sum }}</span>
-                                                    比索
-                                                </th>
-                                                <th style="width: 300px" class="text-center">
-                                                    员工提成支出:
-                                                </th>
-                                                <th style="width: 300px" class="text-center">
+                                                            比索
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                            员工提成支出:
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
                                                     <span style="color: #f00;"
                                                           title="{{ mov.start_date }} 至 {{ mov.end_date }} 提成支出">{{ mov.commission__sum }}</span>
-                                                    比索
-                                                </th>
-                                                <th style="width: 300px" class="text-center">
-                                                    服务单数:&nbsp&nbsp&nbsp&nbsp
-                                                </th>
-                                                <th style="width: 300px" class="text-center">
+                                                            比索
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                            服务单数:&nbsp&nbsp&nbsp&nbsp
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
                                                     <span style="color: #f00;"
                                                           title="{{ mov.start_date }} 至 {{ mov.end_date }} 服务次数">{{ mov.pk__count }}</span>
-                                                    人/次
-                                                </th>
-                                                <th style="width: 300px" class="text-center">
+                                                            人/次
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
                                                     <span title="去重后顾客人数">
                                                         客户数:&nbsp&nbsp&nbsp&nbsp</span>
-                                                </th>
-                                                <th style="width: 300px" class="text-center">
-                                                    <span style="color: #f00;">{{ mov.name__count }}</span> 人
-                                                </th>
-                                                <th style="width: 500px" class="text-center">
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                            <span style="color: #f00;">{{ mov.name__count }}</span> 人
+                                                        </th>
+                                                        <th style="width: 500px" class="text-center">
                                                     <span title="消费3次以上的老顾客">
                                                         老客户数(消费3次及以上):&nbsp&nbsp&nbsp&nbsp</span>
-                                                </th>
-                                                <th style="width: 300px" class="text-center">
-                                                    <span style="color: #f00;">{{ mov.phone__count__count }}</span> 人
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-center">员工业绩:&nbsp</th>
-                                                <th class="text-center"> 比索 ₱</th>
-                                                <th class="text-center">提成总数:&nbsp</th>
-                                                <th class="text-center"> 比索 ₱</th>
-                                                <th class="text-center">服务单数:&nbsp</th>
-                                                <th class="text-center">&sect;单</th>
-                                                <th class="text-center">客户数:&nbsp</th>
-                                                <th class="text-center">&sect;位</th>
-                                                <th class="text-center">小费总计:&nbsp</th>
-                                                <th class="text-center"> 比索 ₱</th>
-                                            </tr>
-                                            <tr>
-                                                {% for st, stvalue in mov.staff_dict.items %}
-                                                    <td class="text-right">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                                                        {{ st }}</td>
-                                                    <td class="text-center">{{ stvalue.amount__sum }} ₱</td>
-                                                    <td class="text-center">提成总数:&nbsp</td>
-                                                    <td class="text-center">{{ stvalue.commission__sum }} ₱</td>
-                                                    <td class="text-center">服务单数:&nbsp</td>
-                                                    <td class="text-center">{{ stvalue.pk__count }}</td>
-                                                    <td class="text-center">客户数</td>
-                                                    <td class="text-center">{{ stvalue.name__count }}</td>
-                                                    <td class="text-center">小费总计:&nbsp</td>
-                                                    <td class="text-center">{{ stvalue.tip__sum }} ₱</td>
-                                                {% endfor %}
-                                            </tr>
-                                            <tr>
-                                                <th class="text-center">活跃客户统计:&nbsp<br>(以次数排名)</th>
-                                                <th class="text-center">手机号:&nbsp</th>
-                                                <th class="text-center">客户名&nbsp</th>
-                                                <th class="text-center">消费次数:&nbsp</th>
-                                                <th class="text-center">消费总金额:</th>
-                                                <th class="text-center">优惠总金额:</th>
-                                                <th class="text-center">打车费用:</th>
-                                                <th class="text-center">小费总计:</th>
-                                                <th class="text-center" colspan="2">住址:&nbsp</th>
-                                            </tr>
-                                            {% for cst in mov.customer_list %}
-                                                <tr>
-                                                    <th class="text-center">第 {{ forloop.counter }} 名</th>
-                                                    <th class="text-center">{{ cst.phone }}</th>
-                                                    <th class="text-center">{{ cst.name }}</th>
-                                                    <th class="text-center">{{ cst.phone__count }}</th>
-                                                    <th class="text-center">{{ cst.amount__sum }} ₱</th>
-                                                    <th class="text-center">{{ cst.discount__sum }} ₱</th>
-                                                    <th class="text-center">{{ cst.fee__sum }}</th>
-                                                    <th class="text-center">{{ cst.tip__sum }} ₱</th>
-                                                    <th class="text-center" colspan="2" >{{ cst.uin__address }}</th>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                            <span style="color: #f00;">{{ mov.phone__count__count }}</span>
+                                                            人
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center">员工业绩:&nbsp</th>
+                                                        <th class="text-center"> 比索 ₱</th>
+                                                        <th class="text-center">提成总数:&nbsp</th>
+                                                        <th class="text-center"> 比索 ₱</th>
+                                                        <th class="text-center">服务单数:&nbsp</th>
+                                                        <th class="text-center">&sect;单</th>
+                                                        <th class="text-center">客户数:&nbsp</th>
+                                                        <th class="text-center">&sect;位</th>
+                                                        <th class="text-center">小费总计:&nbsp</th>
+                                                        <th class="text-center"> 比索 ₱</th>
+                                                    </tr>
+                                                    {% for st, stvalue in mov.staff_dict.items %}
+                                                        <tr>
+                                                            <td class="text-right">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                                                {{ st }}</td>
+                                                            <td class="text-center">{{ stvalue.amount__sum }} ₱</td>
+                                                            <td class="text-center">提成总数:&nbsp</td>
+                                                            <td class="text-center">{{ stvalue.commission__sum }} ₱</td>
+                                                            <td class="text-center">服务单数:&nbsp</td>
+                                                            <td class="text-center">{{ stvalue.pk__count }}</td>
+                                                            <td class="text-center">客户数</td>
+                                                            <td class="text-center">{{ stvalue.name__count }}</td>
+                                                            <td class="text-center">小费总计:&nbsp</td>
+                                                            <td class="text-center">{{ stvalue.tip__sum }} ₱</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <th class="text-center">活跃客户统计:&nbsp<br>(以次数排名)</th>
+                                                        <th class="text-center">手机号:&nbsp</th>
+                                                        <th class="text-center">客户名&nbsp</th>
+                                                        <th class="text-center">消费次数:&nbsp</th>
+                                                        <th class="text-center">消费总金额:</th>
+                                                        <th class="text-center">优惠总金额:</th>
+                                                        <th class="text-center">打车费用:</th>
+                                                        <th class="text-center">小费总计:</th>
+                                                        <th class="text-center" colspan="2">住址:&nbsp</th>
+                                                    </tr>
+                                                    {% for cst in mov.customer_list %}
+                                                        <tr>
+                                                            <th class="text-center">第 {{ forloop.counter }} 名</th>
+                                                            <th class="text-center">{{ cst.phone }}</th>
+                                                            <th class="text-center">{{ cst.name }}</th>
+                                                            <th class="text-center">{{ cst.phone__count }}</th>
+                                                            <th class="text-center">{{ cst.amount__sum }} ₱</th>
+                                                            <th class="text-center">{{ cst.discount__sum }} ₱</th>
+                                                            <th class="text-center">{{ cst.fee__sum }}</th>
+                                                            <th class="text-center">{{ cst.tip__sum }} ₱</th>
+                                                            <th class="text-center"
+                                                                colspan="2">{{ cst.uin__address }}</th>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         {% endifnotequal %}
                                     {% endfor %}
                                 {% endifnotequal %}
