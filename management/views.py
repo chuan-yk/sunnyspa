@@ -90,7 +90,6 @@ def ordernew(request):
                 else:
                     return redirect('/orders', messages.error(request, '更新订单失败', 'alert-danger'))
             else:
-                err = form.is_valid
                 loger.error('func ordernew, error reason : form.is_valid {}'.format(form.is_valid()))
                 return redirect('/orders', messages.error(request, '输入数据格式不正确', 'alert-danger'))
         except Exception as e:
@@ -355,7 +354,6 @@ def ordersanalysis(request):
     summary = multiple_query(handler_query_result['query_dict']['start_date'],
                              handler_query_result['query_dict']['end_date'],
                              handler_query_result['query_conditions'], )
-    print(summary)
     # template - content
     content = {'massagist_list': handler_query_result['massagist_list'],
                'payment_list': handler_query_result['payment_list'],

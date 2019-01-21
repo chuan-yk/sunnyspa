@@ -1,5 +1,6 @@
 import logging
 from django.db import models
+from django.utils.crypto import get_random_string
 from django.utils import timezone
 
 
@@ -54,8 +55,9 @@ class StaffInfo(models.Model):
 
 class SalaryRecord(models.Model):
     """工资发放记录"""
-    name = models.ForeignKey(StaffInfo, null=True, blank=True, on_delete=models.SET_NULL, help_text='员工信息关联StaffInfo表')
-    work_period = models.CharField(default='_', null=False, max_length=20, help_text='计算日期区间, 如20190101 - 20190115')
+    name = models.ForeignKey(StaffInfo, null=True, blank=True, on_delete=models.SET_NULL,
+                             help_text='员工信息关联StaffInfo表')
+    work_period = models.CharField(default='_', null=False, max_length=20, help_text='计算日期区间, 如20190101-20190115')
     work_day = models.CharField(default='_', null=True, max_length=20, help_text='上班日期')
     work_day_count = models.IntegerField(default=0, null=False, help_text='上班天数')
     commission_count = models.IntegerField(default=0, null=False, help_text='提成个数')
@@ -70,21 +72,45 @@ class SalaryRecord(models.Model):
         return 'SalaryRecord: {}'.format(self.name)
 
 
-class CustomerInfo(models.Model):
-    """顾客信息"""
-    name = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一多个名称用'|'隔开")
-    phone = models.CharField(max_length=20, default='_', unique=True, help_text="电话号码(唯一)")
+class RealUser(models.Model):
+    """有效真实用户"""
+    names = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一多个名称用'|'隔开")
+    phone = models.CharField(max_length=50, default='_', unique=True, help_text="电话号码(唯一)")
     address = models.TextField(max_length=500, default='_', help_text="登记地址, 多个地址以'|'隔开")
     service_times = models.IntegerField(default=0, help_text="服务次数")
     total_cost = models.IntegerField(default=0, help_text="总共消费")
     blance = models.IntegerField(default=0, help_text="充值余额")
     blance_changedate = models.DateField(null=True, help_text="余额更新日期")
-    gifts_times = models.IntegerField(default=0, help_text="免费赠送次数")
-    feedback_times = models.IntegerField(default=0, help_text="消费达N次，赠送次数")
+    gifts_times = models.IntegerField(default=0, help_text="应该免费赠送次数")
+    feedback_times = models.IntegerField(default=0, help_text="实际赠送次数")
+    note = models.CharField(max_length=500, help_text="备注信息")
+
+
+def _get_default_by_random():
+    rd_str = 'not_set_' + get_random_string(length=16)
+    if CustomerInfo.objects.filter(phone=rd_str).__len__():
+        return rd_str
+    return 'not_set_' + get_random_string(length=16)
+
+
+class CustomerInfo(models.Model):
+    """顾客信息汇总，包括不完整用户信息记录"""
+    name = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一")
+    phone = models.CharField(max_length=50, default=_get_default_by_random, unique=True, help_text="电话号码(唯一)")
+    address = models.TextField(max_length=500, default='_', help_text="登记地址, 多个地址以'|'隔开")
+    service_times = models.IntegerField(default=0, help_text="服务次数")
+    total_cost = models.IntegerField(default=0, help_text="总共消费")
+    user = models.ForeignKey(RealUser, on_delete=models.SET_NULL, related_name='customer_set', null=True, blank=True,
+                             help_text="关联为唯一真实用户标识")
     note = models.CharField(max_length=500, help_text="备注信息")
 
     def __str__(self):
         return 'CustomerInfo: {}'.format(self.phone)
+
+    # def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs, ):
+    #     if self.name == '':
+    #         self.name = _get_default_by_random()
+    #     super(CustomerInfo, self).save(*args, **kwargs)
 
 
 class Massage(models.Model):
@@ -100,24 +126,25 @@ class Massage(models.Model):
         ('完成|未迟到', '完成|未迟到'),
         ('完成|迟到', '完成|迟到'),
         ('用户取消', '用户取消'),
-        ('迟到取消', '迟到取消'),
+        ('取消|迟到', '取消|迟到'),
     )
     name = models.CharField(max_length=200, default='_', help_text='用户姓名')
     uin = models.ForeignKey(CustomerInfo, on_delete=models.SET_NULL, related_name='customer_set', null=True, blank=True,
                             help_text='用户ID 标识符号，关联CustomerInfo， 对新用户，可为空')
-    phone = models.CharField(max_length=20, default='_', help_text="电话号码")
+    phone = models.CharField(max_length=50, default='_', help_text="电话号码")
     address = models.TextField(max_length=500, default='_', help_text="登记地址")
     service_date = models.DateField(null=True, blank=True, help_text="服务时间，以工作日为准")
     service_type = models.ForeignKey(ServiceMenu, null=True, blank=True, on_delete=models.SET_NULL, help_text='服务类型')
     payment_option = models.CharField(choices=payment_choice, max_length=200, default='比索现金', help_text='付款方式')
     amount = models.IntegerField(default=0, help_text='实收金额')
     discount = models.IntegerField(default=0, help_text='优惠金额')
-    massagist = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, related_name='massagist_set', null=True, blank=True,
-                                  help_text='按摩师')
+    massagist = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, related_name='massagist_set', null=True,
+                                  blank=True, help_text='按摩师')
     tip = models.IntegerField(default=0, help_text='收取小费')
     commission = models.IntegerField(default=0, help_text='实际提成金额')
     fee = models.IntegerField(default=0, help_text='其他花费，如打车费用')
-    order_status = models.CharField(choices=order_status_options, max_length=200, default='完成|未迟到', help_text='完成状态')
+    order_status = models.CharField(choices=order_status_options, max_length=200, default='完成|未迟到',
+                                    help_text='完成状态')
     note = models.CharField(default='-', blank=True, max_length=500, help_text="备注")
 
     def __str__(self):
