@@ -66,6 +66,7 @@ class SalaryRecord(models.Model):
     other_money = models.IntegerField(default=0, null=False, help_text='其他补助、应发')
     total_money = models.IntegerField(default=0, null=False, help_text='应发工资')
     actual_money = models.IntegerField(default=0, null=False, help_text='发薪日实发工资')
+    update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
     s_note = models.CharField(null=True, blank=True, max_length=2000, help_text='备注')
 
     def __str__(self):
@@ -84,6 +85,7 @@ class RealUser(models.Model):
     blance_changedate = models.DateField(null=True, help_text="余额更新日期")
     gifts_times = models.IntegerField(default=0, help_text="应该免费赠送次数")
     feedback_times = models.IntegerField(default=0, help_text="实际赠送次数")
+    update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
     note = models.CharField(max_length=500, help_text="备注信息")
 
 
@@ -99,10 +101,11 @@ class CustomerInfo(models.Model):
     name = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一")
     phone = models.CharField(max_length=50, default=_get_default_by_random, unique=True, help_text="电话号码(唯一)")
     address = models.TextField(max_length=500, default='_', help_text="登记地址, 多个地址以'|'隔开")
-    service_times = models.IntegerField(default=0, help_text="服务次数")
-    total_cost = models.IntegerField(default=0, help_text="总共消费")
-    user = models.ForeignKey(RealUser, on_delete=models.SET_NULL, related_name='customer_set', null=True, blank=True,
-                             help_text="关联为唯一真实用户标识")
+    service_times = models.IntegerField(default=0, null=False, blank=True, help_text="服务次数")
+    total_cost = models.IntegerField(default=0, null=False, blank=True, help_text="总共消费")
+    user = models.ForeignKey(RealUser, on_delete=models.SET_NULL, related_name='customer_set', default=None, null=True,
+                             blank=True, help_text="关联为唯一真实用户标识")
+    update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
     note = models.CharField(max_length=500, help_text="备注信息")
 
     def __str__(self):
@@ -146,6 +149,7 @@ class Massage(models.Model):
     fee = models.IntegerField(default=0, help_text='其他花费，如打车费用')
     order_status = models.CharField(choices=order_status_options, max_length=200, default='完成|未迟到',
                                     help_text='完成状态')
+    update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
     note = models.CharField(default='-', blank=True, max_length=500, help_text="备注")
 
     def __str__(self):
