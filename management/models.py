@@ -75,7 +75,8 @@ class SalaryRecord(models.Model):
 class RealUser(models.Model):
     """有效真实用户"""
     names = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一多个名称用'|'隔开")
-    phone = models.CharField(max_length=50, default='_', unique=True, help_text="电话号码(唯一)")
+    phone = models.CharField(max_length=50, unique=True, help_text="电话号码(唯一)")
+    phone_2 = models.CharField(max_length=50, default='', blank=True, null=True, help_text="其他号码")
     address = models.TextField(max_length=500, default='_', help_text="登记地址, 多个地址以'|'隔开")
     service_times = models.IntegerField(default=0, help_text="服务次数")
     total_cost = models.IntegerField(default=0, help_text="总共消费")
