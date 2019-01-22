@@ -310,7 +310,9 @@ def unit_query_staff_performance(start_date, end_date, *additional_condition):
     staff_list = unit_query_staff(start_date, end_date, *additional_condition)
     staff_dict = dict()
     for staff in staff_list:
-        staff_dict[staff] = unit_query_achievement(start_date, end_date, *additional_condition)
+        additional_condition_2 = list(additional_condition)
+        additional_condition_2.append(Q(massagist__name=staff))
+        staff_dict[staff] = unit_query_achievement(start_date, end_date, *additional_condition_2)
     return {'staff_dict': staff_dict}
 
 
@@ -370,6 +372,7 @@ def ordersanalysis(request):
     summary = multiple_query(handler_query_result['query_dict']['start_date'],
                              handler_query_result['query_dict']['end_date'],
                              handler_query_result['query_conditions'], )
+    print(summary)
     # template - content
     content = {'massagist_list': handler_query_result['massagist_list'],
                'payment_list': handler_query_result['payment_list'],
