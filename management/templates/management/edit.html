@@ -39,51 +39,66 @@
                                     </div>
                                     <div class="col-sm-8">
                                         <header>订单信息</header>
-                                        <div class="form-group">
-                                            {{ form.service_date  | add_class:'form-control' }}
-                                            <label for="regular2">服务日期</label>
-                                        </div>
-                                        <div class="form-group floating-label">
-                                            {{ form.service_type | add_class:'form-control' | attr:'rows:2' }}
-                                            <label for="textarea2">消费项目</label>
-                                        </div>
                                         <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    {{ form.service_date  | add_class:'form-control' }}
+                                                    <label for="regular2">服务日期</label>
+                                                </div>
+                                            </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group floating-label">
                                                     {{ form.payment_option| add_class:'form-control' }}
                                                     <label for="select2">支付方式</label>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-3">
-                                                <div class="form-group floating-label">
-                                                    {{ form.amount | add_class:'form-control' }}
-                                                    <label for="regular2">金额</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <div class="form-group floating-label">
-                                                    {{ form.fee | add_class:'form-control' }}
-                                                    <label for="regular2">其他话费(如打车费用)</label>
-                                                </div>
-                                            </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-9">
+                                                <div class="form-group floating-label">
+                                                    {{ form.service_type | add_class:'form-control' | attr:'rows:2' }}
+                                                    <label for="textarea2">消费项目</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
                                                 <div class="form-group floating-label">
                                                     {{ form.massagist| add_class:'form-control' }}
                                                     <label for="select2">服务技师</label>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-3">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4">
                                                 <div class="form-group floating-label">
-                                                    {{ form.tip | add_class:'form-control' }}
-                                                    <label for="regular2">小费</label>
+                                                    {{ form.amount | add_class:'form-control' }}
+                                                    <label for="regular2">金额</label>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
+                                                <div class="form-group floating-label">
+                                                    {{ form.fee | add_class:'form-control' }}
+                                                    <label for="regular2">其他话费(如打车费用)</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
                                                 <div class="form-group floating-label">
                                                     {{ form.discount | add_class:'form-control' }}
                                                     <label for="regular2">优惠</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="col-sm-4">
+                                                <div class="form-group floating-label">
+                                                    {{ form.commission | add_class:'form-control' }}
+                                                    <label for="regular2">提成</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group floating-label">
+                                                    {{ form.tip | add_class:'form-control' }}
+                                                    <label for="regular2">小费</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -110,7 +125,6 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-
                                         <div class="card-actionbar-row">
                                             <input type="submit" class="btn btn-flat btn-primary ink-reaction"
                                                    value="提交修改">

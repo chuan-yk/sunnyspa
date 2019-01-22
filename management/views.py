@@ -3,7 +3,6 @@ import datetime
 
 from django.shortcuts import render, redirect, HttpResponse
 from .models import ServiceMenu, StaffInfo, SalaryRecord
-# from .forms import OrderForm
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -12,7 +11,8 @@ from django.db.models import Avg, Count, Min, Sum
 
 from .models import Massage
 from .models import ServiceMenu
-from .forms import MassageForm
+from .models import CustomerInfo
+from .forms import MassageAddForm, MassageEditForm
 
 loger = logging.getLogger('runlog')
 current_year = timezone.now().year
@@ -59,7 +59,7 @@ def orderedit(request, pk):
     # POST 响应
     if request.POST:
         try:
-            form = MassageForm(request.POST, instance=order)
+            form = MassageEditForm(request.POST, instance=order)
             if form.is_valid():
                 if form.save():
                     return redirect('/orders', messages.success(request, '更新订单成功', 'alert-success'))
@@ -73,8 +73,20 @@ def orderedit(request, pk):
             return redirect('/orders', messages.error(request, '内部错误', 'alert-danger'))
     # GET响应
     else:
-        form = MassageForm(instance=order)
+        form = MassageEditForm(instance=order)
         return render(request, 'management/edit.html', {'form': form})
+
+
+def related_to_customerinfo(m):
+    if m.phone.strip() == '':  # 记录数据无电话号码，新增CustomerInfo记录随机值
+        cif = CustomerInfo.objects.create(name=m.name, address=m.address, )
+    else:
+        cif, ifcreated = CustomerInfo.objects.get_or_create(phone=m.phone, name=m.name, defaults={'address': m.address})
+    cif.service_times += 1
+    cif.total_cost += m.amount
+    cif.save()
+    m.uin = cif
+    return m
 
 
 @login_required
@@ -83,22 +95,26 @@ def ordernew(request):
     # POST 响应
     if request.POST:
         try:
-            form = MassageForm(request.POST)
+            form = MassageAddForm(request.POST)
             if form.is_valid():
-                if form.save():
+                m = form.save(commit=False)
+                m = related_to_customerinfo(m)
+                try:
+                    m.save()
                     return redirect('/orders', messages.success(request, '更新订单成功', 'alert-success'))
-                else:
+                except Exception as e:
+                    loger.error('func ordernew, add order save error. reason: {}'.format(e))
                     return redirect('/orders', messages.error(request, '更新订单失败', 'alert-danger'))
             else:
                 loger.error('func ordernew, error reason : form.is_valid {}'.format(form.is_valid()))
                 return redirect('/orders', messages.error(request, '输入数据格式不正确', 'alert-danger'))
         except Exception as e:
-            loger.error(e)
+            loger.error('func ordernew try Save POST form Error , reason: {}'.format(e))
             return redirect('/orders', messages.error(request, '内部错误', 'alert-danger'))
     # GET响应
     else:
-        form = MassageForm()
-        return render(request, 'management/edit.html', {'form': form})
+        form = MassageAddForm()
+        return render(request, 'management/new.html', {'form': form})
 
 
 def handler_query(request):
@@ -215,7 +231,7 @@ def handler_query(request):
     items_list = Massage.objects.all().values_list("service_type__items", flat=True).distinct().order_by()
     duration_list = Massage.objects.all().values_list("service_type__duration", flat=True).distinct().order_by()
     order_status_list = Massage.objects.all().values_list("order_status", flat=True).distinct().order_by()
-    loger.debug("func  handler_query ur:analysis massagist_list: {},".format(massagist_list, ) +
+    loger.debug("func  handler_query url: orders|analysis massagist_list: {},".format(massagist_list, ) +
                 "payment_list: {}, ".format(payment_list, ) + "items_list:{}, ".format(items_list) +
                 "duration_list: {}, order_status_list: {}".format(duration_list, order_status_list))
     return {'query_dict': query_dict, 'query_conditions': query_conditions, 'massagist_list': massagist_list,

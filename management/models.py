@@ -84,25 +84,26 @@ class RealUser(models.Model):
     service_times = models.IntegerField(default=0, help_text="服务次数")
     total_cost = models.IntegerField(default=0, help_text="总共消费")
     blance = models.IntegerField(default=0, help_text="充值余额")
-    blance_changedate = models.DateField(null=True, help_text="余额更新日期")
     gifts_times = models.IntegerField(default=0, help_text="应该免费赠送次数")
     feedback_times = models.IntegerField(default=0, help_text="实际赠送次数")
     update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
     note = models.CharField(max_length=500, help_text="备注信息")
 
+    def __str__(self):
+        return str(self.uuid)
+
 
 def _get_default_by_random():
-    rd_str = 'not_set_' + get_random_string(length=16)
-    if CustomerInfo.objects.filter(phone=rd_str).__len__():
+    rd_str = 'no_number_' + get_random_string(length=16)
+    if not CustomerInfo.objects.filter(phone=rd_str).__len__():
         return rd_str
-    return 'not_set_' + get_random_string(length=16)
+    return 'no_number2_' + get_random_string(length=16)
 
 
 class CustomerInfo(models.Model):
     """顾客信息汇总，包括不完整用户信息记录"""
     name = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一")
-    phone = models.CharField(max_length=50, default=_get_default_by_random, unique=True, blank=True,
-                             help_text="电话号码(唯一)")
+    phone = models.CharField(max_length=50, default=_get_default_by_random, blank=True, help_text="电话号码(唯一)")
     address = models.TextField(max_length=500, default='_', blank=True, help_text="登记地址, 多个地址以'|'隔开")
     service_times = models.IntegerField(default=0, null=False, blank=True, help_text="服务次数")
     total_cost = models.IntegerField(default=0, null=False, blank=True, help_text="总共消费")
@@ -114,10 +115,22 @@ class CustomerInfo(models.Model):
     def __str__(self):
         return 'CustomerInfo: {}'.format(self.phone)
 
-    # def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs, ):
-    #     if self.name == '':
-    #         self.name = _get_default_by_random()
-    #     super(CustomerInfo, self).save(*args, **kwargs)
+    class Meta:
+        unique_together = (('name', 'phone'),)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs, ):
+        loger.debug("model CustomerInfo Save Function Start")
+        if not self.user:   # 默认关联一个 Real user
+            relate_user, ifcreated = RealUser.objects.get_or_create(phone=self.phone, defaults={'names': self.name})
+            loger.debug("model CustomerInfo Save Function Auto relate to Realuser, Create={}".format(ifcreated))
+            if ifcreated:
+                relate_user.note = '默认关联'
+                relate_user.service_times += 1
+                relate_user.total_cost += self.total_cost
+                relate_user.save()
+                loger.info('model CustomerInfo Auto relate to Realuser.id: {}'.format(str(relate_user.id)))
+                self.user_id = relate_user.id
+        super(CustomerInfo, self).save(*args, **kwargs)
 
 
 class Massage(models.Model):
@@ -135,12 +148,13 @@ class Massage(models.Model):
         ('用户取消', '用户取消'),
         ('取消|迟到', '取消|迟到'),
     )
-    name = models.CharField(max_length=200, default='_', null=False, blank=True, help_text='用户姓名')
+    name = models.CharField(max_length=200, default='', null=False, blank=True, help_text='用户姓名', )
     uin = models.ForeignKey(CustomerInfo, on_delete=models.SET_NULL, related_name='customer_set', null=True, blank=True,
                             help_text='用户ID 标识符号，关联CustomerInfo， 对新用户，可为空')
-    phone = models.CharField(max_length=50, default=_get_default_by_random, null=False, blank=True, help_text="电话号码")
+    phone = models.CharField(max_length=50, default='', null=False, blank=True, help_text="电话号码")
     address = models.TextField(max_length=500, null=False, blank=True, help_text="登记地址")
-    service_date = models.DateField(null=True, blank=True, help_text="服务时间，以工作日为准(超过12点仍算作前一天业绩)")
+    service_date = models.DateField(default=timezone.now, null=True, blank=True,
+                                    help_text="服务时间，以工作日为准(超过12点仍算作前一天业绩)")
     service_type = models.ForeignKey(ServiceMenu, null=True, blank=True, on_delete=models.SET_NULL, help_text='服务类型')
     payment_option = models.CharField(choices=payment_choice, max_length=200, default='比索现金', help_text='付款方式')
     amount = models.IntegerField(default=0, help_text='实收金额')
