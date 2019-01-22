@@ -1,3 +1,4 @@
+import uuid
 import logging
 from django.db import models
 from django.utils.crypto import get_random_string
@@ -75,6 +76,7 @@ class SalaryRecord(models.Model):
 
 class RealUser(models.Model):
     """有效真实用户"""
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, help_text='user unique ID')
     names = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一多个名称用'|'隔开")
     phone = models.CharField(max_length=50, unique=True, help_text="电话号码(唯一)")
     phone_2 = models.CharField(max_length=50, default='', blank=True, null=True, help_text="其他号码")
@@ -99,14 +101,15 @@ def _get_default_by_random():
 class CustomerInfo(models.Model):
     """顾客信息汇总，包括不完整用户信息记录"""
     name = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一")
-    phone = models.CharField(max_length=50, default=_get_default_by_random, unique=True, help_text="电话号码(唯一)")
-    address = models.TextField(max_length=500, default='_', help_text="登记地址, 多个地址以'|'隔开")
+    phone = models.CharField(max_length=50, default=_get_default_by_random, unique=True, blank=True,
+                             help_text="电话号码(唯一)")
+    address = models.TextField(max_length=500, default='_', blank=True, help_text="登记地址, 多个地址以'|'隔开")
     service_times = models.IntegerField(default=0, null=False, blank=True, help_text="服务次数")
     total_cost = models.IntegerField(default=0, null=False, blank=True, help_text="总共消费")
     user = models.ForeignKey(RealUser, on_delete=models.SET_NULL, related_name='customer_set', default=None, null=True,
                              blank=True, help_text="关联为唯一真实用户标识")
     update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
-    note = models.CharField(max_length=500, help_text="备注信息")
+    note = models.CharField(max_length=500, null=False, blank=True, help_text="备注信息")
 
     def __str__(self):
         return 'CustomerInfo: {}'.format(self.phone)
@@ -132,25 +135,25 @@ class Massage(models.Model):
         ('用户取消', '用户取消'),
         ('取消|迟到', '取消|迟到'),
     )
-    name = models.CharField(max_length=200, default='_', help_text='用户姓名')
+    name = models.CharField(max_length=200, default='_', null=False, blank=True, help_text='用户姓名')
     uin = models.ForeignKey(CustomerInfo, on_delete=models.SET_NULL, related_name='customer_set', null=True, blank=True,
                             help_text='用户ID 标识符号，关联CustomerInfo， 对新用户，可为空')
-    phone = models.CharField(max_length=50, default='_', help_text="电话号码")
-    address = models.TextField(max_length=500, default='_', help_text="登记地址")
-    service_date = models.DateField(null=True, blank=True, help_text="服务时间，以工作日为准")
+    phone = models.CharField(max_length=50, default=_get_default_by_random, null=False, blank=True, help_text="电话号码")
+    address = models.TextField(max_length=500, null=False, blank=True, help_text="登记地址")
+    service_date = models.DateField(null=True, blank=True, help_text="服务时间，以工作日为准(超过12点仍算作前一天业绩)")
     service_type = models.ForeignKey(ServiceMenu, null=True, blank=True, on_delete=models.SET_NULL, help_text='服务类型')
     payment_option = models.CharField(choices=payment_choice, max_length=200, default='比索现金', help_text='付款方式')
     amount = models.IntegerField(default=0, help_text='实收金额')
     discount = models.IntegerField(default=0, help_text='优惠金额')
     massagist = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, related_name='massagist_set', null=True,
                                   blank=True, help_text='按摩师')
-    tip = models.IntegerField(default=0, help_text='收取小费')
-    commission = models.IntegerField(default=0, help_text='实际提成金额')
-    fee = models.IntegerField(default=0, help_text='其他花费，如打车费用')
+    tip = models.IntegerField(default=0, blank=True, help_text='收取小费')
+    commission = models.IntegerField(default=0, blank=True, help_text='实际提成金额')
+    fee = models.IntegerField(default=0, blank=True, help_text='其他花费，如打车费用')
     order_status = models.CharField(choices=order_status_options, max_length=200, default='完成|未迟到',
-                                    help_text='完成状态')
+                                    blank=True, help_text='完成状态')
     update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
-    note = models.CharField(default='-', blank=True, max_length=500, help_text="备注")
+    note = models.CharField(default='', null=False, blank=True, max_length=500, help_text="备注")
 
     def __str__(self):
         return '顾客： {} |- 消费：{}'.format(str(self.name), str(self.service_type))
