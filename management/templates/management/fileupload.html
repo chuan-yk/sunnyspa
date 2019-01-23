@@ -1,0 +1,203 @@
+{% extends 'layout.html' %}
+{% load staticfiles %}
+
+{% block title %} 服务订单批量导入 {% endblock %}
+{% block body %}
+    <section>
+        <div class="section-body">
+            <div class="row">
+                <!-- BEGIN  - FORM -->
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-head style-primary">
+                            <header>批量限定导入</header>
+                            <div class="tools">
+                                <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
+                                <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form class="form" role="form" action="" method="POST"> {% csrf_token %}
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td width="120px">强制覆盖</td>
+                                        <td width="120px">&nbsp
+                                            <input type="radio" name="forcecover" value="1" checked="true">是
+                                            <input type="radio" name="forcecover" value="0">否
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td width="120px">限定导入时间范围</td>
+                                        <td width="120px">&nbsp
+                                            <input type="radio" name="timelimit" value="1"
+                                                   checked="true">是
+                                            <input type="radio" name="timelimit" value="0"
+                                                   checked="true">否
+                                        </td>
+                                        <td>起始时间:</td>
+                                        <td colspan="1">
+                                            <div class="col-sm-12">
+                                                <input name="start_date" value="{{ start_date }}" class="form-control"
+                                                       id="start_date" type="date">
+                                            </div>
+                                        </td>
+                                        <td>截至时间:</td>
+                                        <td colspan="1">
+                                            <div class="col-sm-12">
+                                                <input name="end_date" value="{{ end_date }}" class="form-control"
+                                                       id="end_date" type="date">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp</td>
+                                        <td width="120px">忽略错误行内容</td>
+                                        <td width="120px">&nbsp
+                                            <input type="radio" name="ignoreerr" value="1">是
+                                            <input type="radio" name="ignoreerr" value="0" checked="true">否
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <div class="col-md-12">
+                                    <div class="col-sm-6" >
+                                        选择上传文件:
+                                        <input type=file name="thefile">
+                                    </div>
+                                    <div class="col-sm-6" >
+                                        文件模板规范:<br>
+                                        &nbsp&nbsp&nbsp<a href="{% static 'js/libs/jquery/jquery-1.11.2.min.js' %}"
+                                          class="btn btn-default" >点击下载</a>
+                                    </div>
+                                </div>
+                            </form>
+                        {% if result %}
+                            <hr>
+                            <hr/>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 style="color: #f00;">总结： {{ start_date }} 至 {{ end_date }} 汇总信息</h4>
+
+                                </div>
+                                {% ifnotequal months|length 1 %}
+                                    {% for mo, mov in months.items %}
+                                        {% ifnotequal mov.amount__sum None %}
+                                            <div class="col-md-12">
+                                                <h4 style="color: #5AF8FF;">按月份小结： {{ mo }} 汇总信息</h4>
+                                                <table class="table">
+                                                    <tbody>
+                                                    <tr>
+                                                        <th style="width: 300px" class="text-center">
+                                                            总收入:&nbsp&nbsp&nbsp&nbsp
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                    <span style="color: #f00;"
+                                                          title="{{ mov.start_date }} 至 {{ mov.end_date }} 总收入">{{ mov.amount__sum }}</span>
+                                                            比索
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                            员工提成支出:
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                    <span style="color: #f00;"
+                                                          title="{{ mov.start_date }} 至 {{ mov.end_date }} 提成支出">{{ mov.commission__sum }}</span>
+                                                            比索
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                            服务单数:&nbsp&nbsp&nbsp&nbsp
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                    <span style="color: #f00;"
+                                                          title="{{ mov.start_date }} 至 {{ mov.end_date }} 服务次数">{{ mov.pk__count }}</span>
+                                                            人/次
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                    <span title="去重后顾客人数">
+                                                        客户数:&nbsp&nbsp&nbsp&nbsp</span>
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                            <span style="color: #f00;">{{ mov.name__count }}</span> 人
+                                                        </th>
+                                                        <th style="width: 500px" class="text-center">
+                                                    <span title="消费3次以上的老顾客">
+                                                        老客户数(消费3次及以上):&nbsp&nbsp&nbsp&nbsp</span>
+                                                        </th>
+                                                        <th style="width: 300px" class="text-center">
+                                                            <span style="color: #f00;">{{ mov.phone__count__count }}</span>
+                                                            人
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="text-center">员工业绩:&nbsp</th>
+                                                        <th class="text-center"> 比索 ₱</th>
+                                                        <th class="text-center">提成总数:&nbsp</th>
+                                                        <th class="text-center"> 比索 ₱</th>
+                                                        <th class="text-center">服务单数:&nbsp</th>
+                                                        <th class="text-center">&sect;单</th>
+                                                        <th class="text-center">客户数:&nbsp</th>
+                                                        <th class="text-center">&sect;位</th>
+                                                        <th class="text-center">小费总计:&nbsp</th>
+                                                        <th class="text-center"> 比索 ₱</th>
+                                                    </tr>
+                                                    {% for st, stvalue in mov.staff_dict.items %}
+                                                        <tr>
+                                                            <td class="text-right">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                                                {{ st }}</td>
+                                                            <td class="text-center">{{ stvalue.amount__sum }} ₱</td>
+                                                            <td class="text-center">提成总数:&nbsp</td>
+                                                            <td class="text-center">{{ stvalue.commission__sum }} ₱</td>
+                                                            <td class="text-center">服务单数:&nbsp</td>
+                                                            <td class="text-center">{{ stvalue.pk__count }}</td>
+                                                            <td class="text-center">客户数</td>
+                                                            <td class="text-center">{{ stvalue.name__count }}</td>
+                                                            <td class="text-center">小费总计:&nbsp</td>
+                                                            <td class="text-center">{{ stvalue.tip__sum }} ₱</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <th class="text-center">活跃客户统计:&nbsp<br>(以次数排名)</th>
+                                                        <th class="text-center">手机号:&nbsp</th>
+                                                        <th class="text-center">客户名&nbsp</th>
+                                                        <th class="text-center">消费次数:&nbsp</th>
+                                                        <th class="text-center">消费总金额:</th>
+                                                        <th class="text-center">优惠总金额:</th>
+                                                        <th class="text-center">打车费用:</th>
+                                                        <th class="text-center">小费总计:</th>
+                                                        <th class="text-center" colspan="2">住址:&nbsp</th>
+                                                    </tr>
+                                                    {% for cst in mov.customer_list %}
+                                                        <tr>
+                                                            <th class="text-center">第 {{ forloop.counter }} 名</th>
+                                                            <th class="text-center">{{ cst.phone }}</th>
+                                                            <th class="text-center">{{ cst.name }}</th>
+                                                            <th class="text-center">{{ cst.phone__count }}</th>
+                                                            <th class="text-center">{{ cst.amount__sum }} ₱</th>
+                                                            <th class="text-center">{{ cst.discount__sum }} ₱</th>
+                                                            <th class="text-center">{{ cst.fee__sum }}</th>
+                                                            <th class="text-center">{{ cst.tip__sum }} ₱</th>
+                                                            <th class="text-center"
+                                                                colspan="2">{{ cst.uin__address }}</th>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        {% endifnotequal %}
+                                    {% endfor %}
+                                {% endifnotequal %}
+
+                            </div>
+                        {% endif %}
+                        </div><!--end .card-body -->
+                    </div><!--end .card -->
+                </div><!--end .col -->
+                <!-- END FORM -->
+
+            </div><!--end .row -->
+        </div><!--end .section-body -->
+    </section>
+{% endblock %}

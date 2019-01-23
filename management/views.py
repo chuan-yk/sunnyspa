@@ -1,7 +1,7 @@
 import logging
 import datetime
 
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, reverse, HttpResponse
 from .models import ServiceMenu, StaffInfo, SalaryRecord
 from django.contrib import messages
 from django.utils import timezone
@@ -24,7 +24,7 @@ def index(request):
     """首页"""
     orders = Massage.objects.filter(service_date__year=current_year, service_date__month=current_month)
     content = orders.aggregate(Sum('amount'), Count('pk'), )
-    person_list = orders.values('phone', 'name').annotate(Count('phone'))
+    person_list = orders.values('uin').annotate(Count('uin'))
     person_count = len(person_list)
     current_income = sum(orders.values_list('amount', flat=True))
     loger.debug('current month {} have {} orders, toal amount = {}  '.format(current_month, content['pk__count'],
@@ -115,6 +115,16 @@ def ordernew(request):
     else:
         form = MassageAddForm()
         return render(request, 'management/new.html', {'form': form})
+
+
+@login_required
+def orderbatchnew(request):
+    """批量导入"""
+    if request.POST:
+        return redirect(reverse('management_url_site:batch_add', ))
+    else:
+        print('xxxxxxxyyyyyyyyyyy')
+        return render(request, 'management/fileupload.html', )
 
 
 def handler_query(request):
