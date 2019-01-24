@@ -1,5 +1,6 @@
 import logging
 import datetime
+import xlrd
 
 from django.shortcuts import render, redirect, reverse, HttpResponse
 from .models import ServiceMenu, StaffInfo, SalaryRecord
@@ -120,11 +121,43 @@ def ordernew(request):
 @login_required
 def orderbatchnew(request):
     """批量导入"""
+    today = datetime.date.today()
+    dfts_date = today.replace(day=1).strftime('%Y-%m-%d')
+    dfte_date = last_day_of_month(today).strftime('%Y-%m-%d')
+    content = {'dfts_date': dfts_date, 'dfte_date': dfte_date}
     if request.POST:
+        if request.method == 'POST':
+            # 上传附加参数获取
+            timelimit = request.FILES.get('timelimit')
+            if timelimit:
+                dfts_date = datetime.datetime.strptime(request.FILES.get('dfts_date'), "%Y-%m-%d")
+                dfte_date = datetime.datetime.strptime(request.FILES.get('dfte_date'), "%Y-%m-%d")
+            ignoreerr = request.FILES.get('ignoreerr')
+            try:
+                the_file = request.FILES.get('thefile')
+                print('==', type(the_file))
+                wb = xlrd.open_workbook(filename=None, file_contents=the_file.read())
+                table = wb.sheets()[0]
+                print('-----', table.nrows)
+                paper_name = table.cell_value(0, 1)
+                section_count = table.cell_value(1, 1)
+                nrows = table.nrows  # 行数
+                ncole = table.ncols  # 列数
+                sec_start_line = 3
+                sec_end_line = sec_start_line + int(section_count)
+                for x in range(sec_start_line, sec_end_line):
+                    print(table.cell_value(x, 1))
+                # 用完记得删除
+                wb.release_resources()
+                del wb
+            except:
+                messages.success(request, '导入失败，try', 'alert-danger')
+                return render(request, 'management/fileupload.html', content)
+        print('test--------')
+        messages.success(request, '导入成功', 'alert-success')
         return redirect(reverse('management_url_site:batch_add', ))
     else:
-        print('xxxxxxxyyyyyyyyyyy')
-        return render(request, 'management/fileupload.html', )
+        return render(request, 'management/fileupload.html', content)
 
 
 def handler_query(request):
