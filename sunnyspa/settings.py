@@ -197,4 +197,4 @@ LOGGING = {
         },
     },
 }
-
+logdft = logging.getLogger('runlog')

@@ -136,9 +136,12 @@ def orderbatchnew(request):
             try:
                 the_file = request.FILES.get('thefile')
                 print('==', type(the_file))
-                wb = xlrd.open_workbook(filename=None, file_contents=the_file.read())
+                wb = xlrd.open_workbook(filename=None, file_contents=the_file.read(), formatting_info=True)   # xls文件
                 table = wb.sheets()[0]
                 print('-----', table.nrows)
+                print('table table.row_values(1)', table.row_values(1))
+                print('table table.row_values(2)', table.row_values(2))
+                print('table table.row_values(3)', table.row_values(3))
                 paper_name = table.cell_value(0, 1)
                 section_count = table.cell_value(1, 1)
                 nrows = table.nrows  # 行数
