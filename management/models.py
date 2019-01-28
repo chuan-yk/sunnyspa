@@ -120,16 +120,17 @@ class CustomerInfo(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs, ):
         loger.debug("model CustomerInfo Save Function Start")
-        if not self.user:   # 默认关联一个 Real user
+        if not self.user:   # 无关联realuser， 默认关联一个 Real user
             relate_user, ifcreated = RealUser.objects.get_or_create(phone=self.phone, defaults={'names': self.name})
             loger.debug("model CustomerInfo Save Function Auto relate to Realuser, Create={}".format(ifcreated))
             if ifcreated:
                 relate_user.note = '默认关联'
-                relate_user.service_times += 1
-                relate_user.total_cost += self.total_cost
-                relate_user.save()
-                loger.info('model CustomerInfo Auto relate to Realuser.id: {}'.format(str(relate_user.id)))
-                self.user_id = relate_user.id
+                loger.info("保存CustomerInfo过程默认新增RealUser，phone={}".format(self.phone))
+            relate_user.service_times += 1
+            relate_user.total_cost += self.total_cost
+            relate_user.save()
+            loger.info('model CustomerInfo Auto relate to Realuser.id: {}'.format(str(relate_user.id)))
+            self.user_id = relate_user.id
         super(CustomerInfo, self).save(*args, **kwargs)
 
 

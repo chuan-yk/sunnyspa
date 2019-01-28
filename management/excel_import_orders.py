@@ -3,11 +3,17 @@ import logging
 import datetime
 import re
 
+import os
+import django
+
 from management.models import Massage, StaffInfo, ServiceMenu
 from management.views import related_to_customerinfo
 
-wb = xlrd.open_workbook("/data/kali/test1.xls")
-tb = wb.sheet_by_index(0)
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "UserAdmin.settings")
+django.setup()
+# wb = xlrd.open_workbook("/data/kali/test1.xls")
+# tb = wb.sheet_by_index(0)
 loger = logging.getLogger('runlog')
 staff_list = StaffInfo.objects.values_list('name', flat=True)
 
@@ -80,7 +86,6 @@ def read_number(ss):
 
 
 def main_read(table, timelimit=False, s_date=datetime.date.today(), e_date=datetime.date.today()):
-    table = tb
     end_row_num = table.nrows - 1
     if table.cell(2, 0).value.lower() != 'name':
         loger.error('表格不符合模板规范， 第3行，第1列非NAME标题栏')
@@ -93,17 +98,37 @@ def main_read(table, timelimit=False, s_date=datetime.date.today(), e_date=datet
     # 批量导入
     mlist = []
     for r_num in range(start_row_num, end_row_num):
-        l = table.row_values(r_num)
+        line = table.row_values(r_num)
         the_date = read_date(table, r_num, 5)
         # 指定导入时间条件， 时间条件不满足不导入该条数据
         if timelimit and check_date(the_date, s_date, e_date):
             continue
-        name, phone, address = rbk(l[0]), rbk(l[1]), rbk(l[2])
-        service_type_id, massagist_id = ttp(rbk(l[3]).upper()), tmg(rbk(l[6].lower()))
-        amount, fee = read_number(l[4]), read_number(l[7])
-        m1 = Massage(name=name, phone=phone, address=address, service_date=the_date, fee=fee,
-                     amount=amount, massagist_id=massagist_id, service_type_id=service_type_id, )
+        name, phone, address = rbk(line[0]), rbk(line[1]), rbk(line[2])
+        service_type_id, massagist_id = ttp(rbk(line[3]).upper()), tmg(rbk(line[6].lower()))
+        amount, fee = read_number(line[4]), read_number(line[7])
+        note = ''
+        if not service_type_id:
+            note = note + ' , ' + str(rbk(line[3]).upper())
+        if not massagist_id:
+            note = note + ' , ' + str(rbk(line[6].lower()))
+        m1 = Massage(name=name, phone=phone, address=address, service_date=the_date, fee=fee, amount=amount,
+                     massagist_id=massagist_id, service_type_id=service_type_id, note=note)
         m1 = related_to_customerinfo(m1)
         mlist.append(m1)
-    loger.info('读取Excel 完成，开始插入Database')
-    Massage.objects.bulk_create(mlist)
+    loger.info('读取Excel 完成， 获取数据{} 行'.format(len(mlist)))
+    loger.debug('读取Excel 数据详情：\n {}'.format(str(mlist)))
+    return mlist
+
+
+def data_insert(the_list):
+    try:
+        Massage.objects.bulk_create(the_list)
+        number_of_data = len(the_list)
+        loger.debug('Massage 导入数据成功， 读取数据{0}条，导入成功{0}条'.format(number_of_data))
+        return {'status': 1, 'num': number_of_data}
+    except:
+        loger.error('Massage 导入数据失败，the_list={}'.format(the_list))
+        return {'status': 0, }
+
+
+

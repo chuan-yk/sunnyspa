@@ -3,51 +3,187 @@
     "model": "management.staffinfo",
     "pk": 1,
     "fields": {
-      "name": "laila",
-      "entry_date": "2017-09-01",
-      "work_status": 1,
-      "birthday": "2019-01-14",
+      "name": "sunny",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
       "salary": 0,
-      "commission": 100,
-      "overtime_pay": 46,
-      "daily_allowance": 50,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
       "half_month_payment": 0,
       "resignation": null,
-      "note": "\u65e0"
+      "note": ""
     }
   },
   {
     "model": "management.staffinfo",
     "pk": 2,
     "fields": {
-      "name": "zhel",
-      "entry_date": "2018-07-01",
-      "work_status": 1,
+      "name": "rose",
+      "entry_date": null,
+      "work_status": 0,
       "birthday": null,
       "salary": 0,
-      "commission": 100,
-      "overtime_pay": 46,
-      "daily_allowance": 50,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
       "half_month_payment": 0,
       "resignation": null,
-      "note": "\u65e0"
+      "note": ""
     }
   },
   {
     "model": "management.staffinfo",
     "pk": 3,
     "fields": {
-      "name": "len",
-      "entry_date": "2017-09-01",
-      "work_status": 1,
-      "birthday": "2019-01-14",
+      "name": "laila",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
       "salary": 0,
-      "commission": 100,
-      "overtime_pay": 46,
-      "daily_allowance": 50,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
       "half_month_payment": 0,
       "resignation": null,
-      "note": "\u65e0"
+      "note": ""
+    }
+  },
+  {
+    "model": "management.staffinfo",
+    "pk": 4,
+    "fields": {
+      "name": "cheylin",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
+      "salary": 0,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
+      "half_month_payment": 0,
+      "resignation": null,
+      "note": ""
+    }
+  },
+  {
+    "model": "management.staffinfo",
+    "pk": 5,
+    "fields": {
+      "name": "mae",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
+      "salary": 0,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
+      "half_month_payment": 0,
+      "resignation": null,
+      "note": ""
+    }
+  },
+  {
+    "model": "management.staffinfo",
+    "pk": 6,
+    "fields": {
+      "name": "jhney",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
+      "salary": 0,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
+      "half_month_payment": 0,
+      "resignation": null,
+      "note": ""
+    }
+  },
+  {
+    "model": "management.staffinfo",
+    "pk": 7,
+    "fields": {
+      "name": "david",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
+      "salary": 0,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
+      "half_month_payment": 0,
+      "resignation": null,
+      "note": ""
+    }
+  },
+  {
+    "model": "management.staffinfo",
+    "pk": 8,
+    "fields": {
+      "name": "zhel",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
+      "salary": 0,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
+      "half_month_payment": 0,
+      "resignation": null,
+      "note": ""
+    }
+  },
+  {
+    "model": "management.staffinfo",
+    "pk": 9,
+    "fields": {
+      "name": "mary",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
+      "salary": 0,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
+      "half_month_payment": 0,
+      "resignation": null,
+      "note": ""
+    }
+  },
+  {
+    "model": "management.staffinfo",
+    "pk": 10,
+    "fields": {
+      "name": "macia",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
+      "salary": 0,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
+      "half_month_payment": 0,
+      "resignation": null,
+      "note": ""
+    }
+  },
+  {
+    "model": "management.staffinfo",
+    "pk": 11,
+    "fields": {
+      "name": "len",
+      "entry_date": null,
+      "work_status": 0,
+      "birthday": null,
+      "salary": 0,
+      "commission": 0,
+      "overtime_pay": null,
+      "daily_allowance": 0,
+      "half_month_payment": 0,
+      "resignation": null,
+      "note": ""
     }
   }
 ]

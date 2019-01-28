@@ -14,6 +14,7 @@ from .models import Massage
 from .models import ServiceMenu
 from .models import CustomerInfo
 from .forms import MassageAddForm, MassageEditForm
+from .excel_import_orders import main_read, data_insert
 
 loger = logging.getLogger('runlog')
 current_year = timezone.now().year

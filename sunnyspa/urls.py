@@ -13,14 +13,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
+import django
+
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-
 from management import urls as burls
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+django.setup()
 
 urlpatterns = [
     path('', include(burls, namespace='management_url_site')),
