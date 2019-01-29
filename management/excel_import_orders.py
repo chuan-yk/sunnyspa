@@ -2,20 +2,25 @@ import xlrd
 import logging
 import datetime
 import re
+from django.utils import timezone
+from management.models import Massage, StaffInfo, ServiceMenu, CustomerInfo
 
-import os
-import django
-
-from management.models import Massage, StaffInfo, ServiceMenu
-from management.views import related_to_customerinfo
-
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "UserAdmin.settings")
-django.setup()
 # wb = xlrd.open_workbook("/data/kali/test1.xls")
 # tb = wb.sheet_by_index(0)
 loger = logging.getLogger('runlog')
 staff_list = StaffInfo.objects.values_list('name', flat=True)
+
+
+def related_to_customerinfo(m):
+    if m.phone.strip() == '':  # 记录数据无电话号码，新增CustomerInfo记录随机值
+        cif = CustomerInfo.objects.create(name=m.name, address=m.address, )
+    else:
+        cif, ifcreated = CustomerInfo.objects.get_or_create(phone=m.phone, name=m.name, defaults={'address': m.address})
+    cif.service_times += 1
+    cif.total_cost += m.amount
+    cif.save()
+    m.uin = cif
+    return m
 
 
 def read_date(table, r, c):
@@ -32,7 +37,7 @@ def read_date(table, r, c):
             cell_date = datetime.datetime.strptime(cell_vl, '%Y-%m-%d').date()
             return cell_date
         except ValueError:
-            return None
+            return datetime.date(2017, 1, 1)
     else:
         loger.error('读取表格时间字段，第{}行 第{}列, 无效内容'.format(r, c))
         return None
@@ -85,7 +90,7 @@ def read_number(ss):
         return 0
 
 
-def main_read(table, timelimit=False, s_date=datetime.date.today(), e_date=datetime.date.today()):
+def main_read(table, timelimit='0', s_date=datetime.date.today(), e_date=datetime.date.today()):
     end_row_num = table.nrows - 1
     if table.cell(2, 0).value.lower() != 'name':
         loger.error('表格不符合模板规范， 第3行，第1列非NAME标题栏')
@@ -101,7 +106,7 @@ def main_read(table, timelimit=False, s_date=datetime.date.today(), e_date=datet
         line = table.row_values(r_num)
         the_date = read_date(table, r_num, 5)
         # 指定导入时间条件， 时间条件不满足不导入该条数据
-        if timelimit and check_date(the_date, s_date, e_date):
+        if timelimit == '1' and check_date(the_date, s_date, e_date):
             continue
         name, phone, address = rbk(line[0]), rbk(line[1]), rbk(line[2])
         service_type_id, massagist_id = ttp(rbk(line[3]).upper()), tmg(rbk(line[6].lower()))
@@ -126,9 +131,9 @@ def data_insert(the_list):
         number_of_data = len(the_list)
         loger.debug('Massage 导入数据成功， 读取数据{0}条，导入成功{0}条'.format(number_of_data))
         return {'status': 1, 'num': number_of_data}
-    except:
+    except Exception as e:
         loger.error('Massage 导入数据失败，the_list={}'.format(the_list))
-        return {'status': 0, }
+        return {'status': 0, 'error': str(e)}
 
 
 

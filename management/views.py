@@ -40,12 +40,15 @@ def ordersindex(request):
     """订单页"""
     handler_query_result = handler_query(request)
     orders = Massage.objects.filter(*handler_query_result['query_conditions']).order_by('-pk')
+    # 当前时间范围内的员工列表
+    massagist_list = set(orders.values_list('massagist__name', flat=True).distinct())
     # 返回结果计数
     orders_count = len(orders)
     # 性能控制，截断默认返回值数据量
     if len(orders) >= 150:
         orders = orders[:150]
-    content = {'massagist_list': handler_query_result['massagist_list'],
+    content = {'massagist_list': massagist_list,
+               # 'massagist_list': handler_query_result['massagist_list'],      # 默认返回全部
                'payment_list': handler_query_result['payment_list'],
                'items_list': handler_query_result['items_list'],
                'duration_list': handler_query_result['duration_list'], 'orders_count': orders_count,
@@ -126,40 +129,37 @@ def orderbatchnew(request):
     dfts_date = today.replace(day=1).strftime('%Y-%m-%d')
     dfte_date = last_day_of_month(today).strftime('%Y-%m-%d')
     content = {'dfts_date': dfts_date, 'dfte_date': dfte_date}
-    if request.POST:
-        if request.method == 'POST':
-            # 上传附加参数获取
-            timelimit = request.FILES.get('timelimit')
-            if timelimit:
-                dfts_date = datetime.datetime.strptime(request.FILES.get('dfts_date'), "%Y-%m-%d")
-                dfte_date = datetime.datetime.strptime(request.FILES.get('dfte_date'), "%Y-%m-%d")
-            ignoreerr = request.FILES.get('ignoreerr')
-            try:
-                the_file = request.FILES.get('thefile')
-                print('==', type(the_file))
-                wb = xlrd.open_workbook(filename=None, file_contents=the_file.read(), formatting_info=True)   # xls文件
-                table = wb.sheets()[0]
-                print('-----', table.nrows)
-                print('table table.row_values(1)', table.row_values(1))
-                print('table table.row_values(2)', table.row_values(2))
-                print('table table.row_values(3)', table.row_values(3))
-                paper_name = table.cell_value(0, 1)
-                section_count = table.cell_value(1, 1)
-                nrows = table.nrows  # 行数
-                ncole = table.ncols  # 列数
-                sec_start_line = 3
-                sec_end_line = sec_start_line + int(section_count)
-                for x in range(sec_start_line, sec_end_line):
-                    print(table.cell_value(x, 1))
-                # 用完记得删除
-                wb.release_resources()
-                del wb
-            except:
-                messages.success(request, '导入失败，try', 'alert-danger')
-                return render(request, 'management/fileupload.html', content)
-        print('test--------')
-        messages.success(request, '导入成功', 'alert-success')
-        return redirect(reverse('management_url_site:batch_add', ))
+    if request.method == 'POST':
+        # 上传附加参数获取
+        timelimit = request.POST.get('timelimit')
+        if timelimit == '1':
+            dfts_date = datetime.datetime.strptime(request.POST.get('dfts_date'), "%Y-%m-%d").date()
+            dfte_date = datetime.datetime.strptime(request.POST.get('dfte_date'), "%Y-%m-%d").date()
+        # ignoreerr = request.POST.get('ignoreerr')
+        forcecover = request.POST.get('forcecover')
+        loger.debug(
+            '上传文件附加条件为： timelimit={}， {}， {}， forcecover={}'.format(timelimit, dfts_date, dfte_date, forcecover))
+        if forcecover == '1':
+            Massage.objects.filter(Q(service_date__gte=dfts_date), Q(service_date__lte=dfte_date)).delete()
+        try:
+            the_file = request.FILES.get('thefile')
+            wb = xlrd.open_workbook(filename=None, file_contents=the_file.read(), formatting_info=True)  # xls文件
+            table = wb.sheets()[0]
+            mlist = main_read(table, timelimit=timelimit, s_date=dfts_date, e_date=dfte_date)
+            insert_result = data_insert(mlist)
+            if insert_result['status']:
+                loger.info('request 上传文件导入成功')
+            else:
+                raise ValueError(insert_result['error'])
+            # 用完记得删除
+            wb.release_resources()
+            del wb
+        except Exception as e:
+            loger.error('request 上传文件导入失败， 错误原因{}'.format(str(e)))
+            messages.success(request, '导入失败，try', 'alert-danger')
+            return render(request, 'management/fileupload.html', content)
+        messages.success(request, '导入成功, 共{}条数据'.format(insert_result['num']), 'alert-success')
+        return redirect(reverse('management_url_site:orders', ))
     else:
         return render(request, 'management/fileupload.html', content)
 
@@ -319,7 +319,7 @@ def unit_query_sums(start_date, end_date, *additional_condition):
     """指定时间参数，补充查询条件， 查询 amount commission tip pk"""
     filter_condition = [Q(service_date__gte=start_date), Q(service_date__lte=end_date), ] + list(additional_condition)
     loger.debug("function unit_query_sums, parameter: {}, {} ; filter_condition: {} .".format(start_date, end_date,
-                                                                                               filter_condition))
+                                                                                              filter_condition))
     return Massage.objects.filter(*filter_condition).aggregate(Sum('amount'), Sum('commission'), Sum('tip'),
                                                                Count('pk'))
 
@@ -396,7 +396,7 @@ def multiple_query(sdate, edate, query_conditions):
     # 更新时间段业绩数据
     loger.info("func multiple_query 更新各时间段业绩数据")
     ad_ach = query_conditions
-    ad_ach.append(Q(order_status__contains="完成"))   # 补充查询条件状态为完成
+    ad_ach.append(Q(order_status__contains="完成"))  # 补充查询条件状态为完成
     summary = combine_unit_data(summary, unit_query_achievement, *ad_ach)
     # 更新时间顾客数据
     loger.info("func multiple_query 更新各时间段顾客数据")
