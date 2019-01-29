@@ -429,3 +429,39 @@ def ordersanalysis(request):
                **handler_query_result['query_dict'],
                **summary, }
     return render(request, 'management/analysis.html', content)
+
+
+@login_required
+def staff_index(request):
+    return HttpResponse('it is test !')
+
+
+@login_required
+def staff_edit(request):
+    return HttpResponse('it is test !')
+
+
+@login_required
+def salary(request):
+    return HttpResponse('it is test !')
+
+
+@login_required
+def salary_recalculate(request):
+    return HttpResponse('it is test !')
+
+
+@login_required
+def attendance(request):
+    return HttpResponse('it is test !')
+
+
+@login_required
+def cus_info(request):
+    return HttpResponse('it is test !')
+
+
+@login_required
+def cus_summary(request):
+    return HttpResponse('it is test !')
+
