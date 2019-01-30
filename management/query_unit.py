@@ -302,3 +302,14 @@ def cus_handle_query(request):
             query_conditions.append(Q(note__icontains=note))
             query_dict['note'] = note
     return {'query_dict': query_dict, 'query_conditions': query_conditions, }
+
+
+def massage_belong_realuser(pk):
+    """realuser 关联cus下全部massage"""
+    return Massage.objects.filter(Q(uin__user__pk=pk), ~Q(amount=0))
+
+
+def massage_set_sum(m_set):
+    """amount 求和"""
+    return m_set.aggregate(Sum('amount'))
+

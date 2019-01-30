@@ -66,7 +66,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card-actionbar-row">
-                                            <a href="{% url 'management_url_site:cus_info' %}"
+                                            <a href="{% url 'management_url_site:cus_recalculate_all' %}"
                                                class="btn btn-flat btn-primary ink-reaction"><span
                                                     class="title">数据更新</span></a>
                                         </div>
@@ -135,7 +135,7 @@
                                                    class="btn btn-default "><i>编辑</i> </a>
                                                 <a href="{% url 'management_url_site:edit' u.pk %}"
                                                    class="btn btn-default "><i>关联</i> </a>
-                                                <a href="{% url 'management_url_site:edit' u.pk %}"
+                                                <a href="{% url 'management_url_site:cus_recalculate' u.pk %}"
                                                    class="btn btn-default "><i>重算</i> </a>
 {#                                                <a href="#" class="btn ink-reaction btn-floating-action btn-danger"#}
 {#                                                   onclick="return confirm('暂不提供删除功能')"><i class="md md-delete"></i>#}

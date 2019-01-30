@@ -16,19 +16,19 @@ def read_date(table, r, c):
     """读取日期"""
     cell_tp = table.cell(r, c).ctype
     cell_vl = table.cell(r, c).value
-    loger.debug('读取表格时间字段，第{}行 第{}列 value={}, 类型ctype={}'.format(r, c, cell_vl, cell_tp))
+    loger.debug('读取表格时间字段，第{}行 第{}列 value={}, 类型ctype={}'.format(r + 1, c + 1, cell_vl, cell_tp))
     if cell_tp == 3:
         cell_date = xlrd.xldate_as_datetime(cell_vl, 0).date()
         return cell_date
     elif cell_tp == 1:
-        loger.warning('读取表格时间字段，第{}行 第{}列类型为 String, value={}， 尝试转换为date'.format(r, c, cell_vl))
+        loger.warning('读取表格时间字段，第{}行 第{}列类型为 String, value={}， 尝试转换为date'.format(r + 1, c + 1, cell_vl))
         try:
             cell_date = datetime.datetime.strptime(cell_vl, '%Y-%m-%d').date()
             return cell_date
         except ValueError:
             return datetime.date(2017, 1, 1)
     else:
-        loger.error('读取表格时间字段，第{}行 第{}列, 无效内容'.format(r, c))
+        loger.error('读取表格时间字段，第{}行 第{}列, 无效内容'.format(r + 1, c + 1))
         return None
 
 
@@ -98,9 +98,16 @@ def main_read(table, timelimit='0', s_date=datetime.date.today(), e_date=datetim
         if timelimit == '1' and check_date(the_date, s_date, e_date):
             continue
         name, phone, address = rbk(line[0]), rbk(line[1]), rbk(line[2])
+        loger.debug(
+            'function main_read读取Excel第{}行 name={}, phone={}, address={}'.format(r_num + 1, name, phone, address))
         service_type_id, massagist_id = ttp(rbk(line[3]).upper()), tmg(rbk(line[6].lower()))
+        loger.debug(
+            'function main_read读取Excel第{}行 service_type_id={}, massagist_id={}, '.format(r_num + 1, service_type_id,
+                                                                                         massagist_id))
         amount, fee = read_number(line[4]), read_number(line[7])
         note = ''
+        loger.debug(
+            'function main_read读取Excel第{}行 amount={}, fee={}, '.format(r_num + 1, amount, fee))
         if not service_type_id:
             note = note + ' , ' + str(rbk(line[3]).upper())
         if not massagist_id:
@@ -109,6 +116,7 @@ def main_read(table, timelimit='0', s_date=datetime.date.today(), e_date=datetim
                      massagist_id=massagist_id, service_type_id=service_type_id, note=note)
         m1 = related_to_customerinfo(m1)
         mlist.append(m1)
+        loger.debug('function main_read读取Excel第{}行完成'.format(r_num + 1))
     loger.info('读取Excel 完成， 获取数据{} 行'.format(len(mlist)))
     loger.debug('读取Excel 数据详情：\n {}'.format(str(mlist)))
     return mlist
@@ -123,6 +131,3 @@ def data_insert(the_list):
     except Exception as e:
         loger.error('Massage 导入数据失败，the_list={}'.format(the_list))
         return {'status': 0, 'error': str(e)}
-
-
-

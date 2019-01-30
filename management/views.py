@@ -9,13 +9,14 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count, Min, Sum, Q
 
 from .models import Massage
-from .models import ServiceMenu
 from .models import RealUser
+from .models import ServiceMenu
 from .models import StaffInfo
 from .models import CustomerInfo
 from .forms import MassageAddForm, MassageEditForm
 from .excel_import_orders import main_read, data_insert
 from .query_unit import *
+from .update_unit import *
 
 loger = logging.getLogger('runlog')
 current_year = timezone.now().year
@@ -136,6 +137,7 @@ def orderbatchnew(request):
             wb = xlrd.open_workbook(filename=None, file_contents=the_file.read(), formatting_info=True)  # xls文件
             table = wb.sheets()[0]
             mlist = main_read(table, timelimit=timelimit, s_date=dfts_date, e_date=dfte_date)
+            loger.debug('view function get mlist ==')
             insert_result = data_insert(mlist)
             if insert_result['status']:
                 loger.info('request 上传文件导入成功')
@@ -205,7 +207,7 @@ def attendance(request):
 def cus_info(request):
     cus_handle_query_result = cus_handle_query(request)
     query_conditions = cus_handle_query_result['query_conditions']
-    query_conditions.append(Q(valid__exact=1))
+    query_conditions.append(Q(isvalid__exact=1))
     users = RealUser.objects.filter(*query_conditions)
     content = {'users': users, **cus_handle_query_result['query_dict'], }
     return render(request, 'management/cusindex.html', content)
@@ -220,7 +222,7 @@ def cus_edit(request, pk):
             user.feedback_times = int(request.POST.get('feedback_times'))
             user.phone_2 = request.POST.get('phone_2')
             user.note = request.POST.get('note')
-            user.valid = int(request.POST.get('valid'))
+            user.isvalid = int(request.POST.get('isvalid'))
             user.save()
             loger.debug('view function cus_edit, update {} '.format(user))
             messages.success(request, '更新成功', 'alert-success')
@@ -233,9 +235,20 @@ def cus_edit(request, pk):
 
 
 @login_required
-def cus_recalculate(request, pk):
-    user = get_object_or_404(RealUser, pk=pk)
+def cus_recalculate_all(request):
+    users = RealUser.objects.filter(~Q(isvalid=0))
+    for u in users:
+        user_recalculate(u.pk)
+    messages.success(request, '全部用户信息更新成功', 'alert-success')
+    return redirect(reverse('management_url_site:cus_info', ))
 
+
+@login_required
+def cus_recalculate(request, pk):
+    """重算Realuser 对应的统计数据"""
+    user_recalculate(pk)
+    messages.success(request, '顾客ID={}信息更新成功'.format(pk), 'alert-success')
+    return redirect(reverse('management_url_site:cus_info', ))
 
 
 @login_required

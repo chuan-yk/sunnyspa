@@ -86,7 +86,7 @@ class RealUser(models.Model):
     blance = models.IntegerField(default=0, help_text="充值余额")
     gifts_times = models.IntegerField(default=0, help_text="应该免费赠送次数")
     feedback_times = models.IntegerField(default=0, help_text="实际赠送次数")
-    valid = models.IntegerField(default=1, blank=True, help_text="是否为有效的真实客户(区别于自动创建的用户), 1有效，0无效")
+    isvalid = models.IntegerField(default=1, blank=True, help_text="是否为有效的真实客户(区别于自动创建的用户), 1有效，0无效")
     update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
     note = models.CharField(max_length=500, help_text="备注信息")
 
