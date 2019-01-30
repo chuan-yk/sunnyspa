@@ -77,7 +77,7 @@ class SalaryRecord(models.Model):
 class RealUser(models.Model):
     """有效真实用户"""
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, help_text='user unique ID')
-    names = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一多个名称用'|'隔开")
+    name = models.CharField(max_length=100, null=False, blank=True, help_text="姓名, 不唯一多个名称用'|'隔开")
     phone = models.CharField(max_length=50, unique=True, help_text="电话号码(唯一)")
     phone_2 = models.CharField(max_length=50, default='', blank=True, null=True, help_text="其他号码")
     address = models.TextField(max_length=500, default='_', help_text="登记地址, 多个地址以'|'隔开")
@@ -86,6 +86,7 @@ class RealUser(models.Model):
     blance = models.IntegerField(default=0, help_text="充值余额")
     gifts_times = models.IntegerField(default=0, help_text="应该免费赠送次数")
     feedback_times = models.IntegerField(default=0, help_text="实际赠送次数")
+    valid = models.IntegerField(default=1, blank=True, help_text="是否为有效的真实客户(区别于自动创建的用户), 1有效，0无效")
     update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
     note = models.CharField(max_length=500, help_text="备注信息")
 
@@ -121,10 +122,11 @@ class CustomerInfo(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs, ):
         loger.debug("model CustomerInfo Save Function Start")
         if not self.user:   # 无关联realuser， 默认关联一个 Real user
-            relate_user, ifcreated = RealUser.objects.get_or_create(phone=self.phone, defaults={'names': self.name})
+            relate_user, ifcreated = RealUser.objects.get_or_create(phone=self.phone, defaults={'name': self.name,
+                                                                                                'address': self.address})
             loger.debug("model CustomerInfo Save Function Auto relate to Realuser, Create={}".format(ifcreated))
             if ifcreated:
-                relate_user.note = '默认关联'
+                self.note = '默认关联'
                 loger.info("保存CustomerInfo过程默认新增RealUser，phone={}".format(self.phone))
             relate_user.service_times += 1
             relate_user.total_cost += self.total_cost
@@ -150,7 +152,7 @@ class Massage(models.Model):
         ('取消|迟到', '取消|迟到'),
     )
     name = models.CharField(max_length=200, default='', null=False, blank=True, help_text='用户姓名', )
-    uin = models.ForeignKey(CustomerInfo, on_delete=models.SET_NULL, related_name='customer_set', null=True, blank=True,
+    uin = models.ForeignKey(CustomerInfo, on_delete=models.SET_NULL, related_name='cus_set', null=True, blank=True,
                             help_text='用户ID 标识符号，关联CustomerInfo， 对新用户，可为空')
     phone = models.CharField(max_length=50, default='', null=False, blank=True, help_text="电话号码")
     address = models.TextField(max_length=500, null=False, blank=True, help_text="登记地址")

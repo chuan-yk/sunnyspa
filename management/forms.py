@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Massage, CustomerInfo
+from .models import Massage, CustomerInfo, RealUser
 
 
 class MassageEditForm(ModelForm):
@@ -53,3 +53,7 @@ class MassageAddForm(ModelForm):
                   'discount', 'massagist', 'tip', 'commission', 'fee', 'order_status', 'note']
         widgets = {
             'service_date': forms.DateInput(attrs={'type': 'date'})}  # 修改template input字段类型
+
+
+
+

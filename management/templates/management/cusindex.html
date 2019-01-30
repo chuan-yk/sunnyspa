@@ -1,0 +1,158 @@
+{% extends 'layout.html' %}
+
+{% block title %} 客户档案信息 {% endblock %}
+
+{% block body %}
+    <section xmlns="http://www.w3.org/1999/html">
+        <div class="section-body">
+            <!-- BEGIN DATATABLE 2 -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-head style-primary">
+                            <header>全部顾客列表</header>
+                            <div class="tools">
+                                <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
+                                <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form class="form" role="form" action="" method="GET"> {% csrf_token %}
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td>&nbsp&nbsp&nbsp&nbsp&nbsp用户名:</td>
+                                        <td>
+                                            <input value="{{ name }}" type="text" id="name" name="name" maxlength="16"
+                                                   placeholder="用户名模糊查询">
+                                        </td>
+                                        <td>&nbsp&nbsp用户手机号:</td>
+                                        <td>
+                                            <input value="{{ phone }}" type="text" id="phone" name="phone"
+                                                   maxlength="50" class="" placeholder="电话号码模糊查询">
+                                        </td>
+                                        <td>&nbsp&nbsp&nbsp&nbsp用户名:&nbsp&nbsp</td>
+                                        <td>
+                                            <input value="{{ exact_name }}" type="text" id="exact_name"
+                                                   name="exact_name" maxlength="50" class="" placeholder="用户名精准查询">
+                                        </td>
+                                        <td>&nbsp&nbsp&nbsp&nbsp地址:&nbsp&nbsp</td>
+                                        <td>
+                                            <input value="{{ address }}" type="text" name="address" maxlength="100"
+                                                   style="width:240px;" placeholder="客户地址模糊查询">
+                                        </td>
+                                        <td>&nbsp&nbsp备注:</td>
+                                        <td>
+                                            <input value="{{ note }}" type="text" name="note" maxlength="100"
+                                                   style="width:240px;" placeholder="备注信息模糊查询">
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        <div class="card-actionbar-row">
+                                            <a href="#" onclick="return confirm('功能暂不可用')"
+                                               class="btn btn-flat btn-primary ink-reaction"><span
+                                                    class="title">新增客户记录</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="card-actionbar-row">
+                                            <a href="#" onclick="return confirm('功能暂不可用')"
+                                               class="btn btn-flat btn-primary ink-reaction">
+                                                    <span class="title">导入客户记录</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="card-actionbar-row">
+                                            <a href="{% url 'management_url_site:cus_info' %}"
+                                               class="btn btn-flat btn-primary ink-reaction"><span
+                                                    class="title">数据更新</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="card-actionbar-row">
+                                            <p class="btn btn-flat btn-primary ink-reaction"><span
+                                                    class="title">查询共 {{ users.count }} 条</span></p>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="card-actionbar-row">
+                                            <a href="{% url 'management_url_site:cus_info' %}"
+                                               class="btn btn-flat btn-primary ink-reaction"><span
+                                                    class="title">重置查询</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="card-actionbar-row">
+                                            <input type="submit" class="btn btn-flat btn-primary ink-reaction"
+                                                   value="开始查询">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <hr><hr><hr>
+                            <div class="table-responsive">
+                                {# <table id="datatable2" class="table order-column hover">#}
+                                <table id="datatable1" class="table order-column hover">
+                                    <thead>
+                                    <tr>
+                                        <th>编号</th>
+{#                                        <th width="90px" >用户码</th>#}
+                                        <th>姓名</th>
+                                        <th>手机号</th>
+                                        <th>地址</th>
+                                        <th>总消费金额</th>
+                                        <th>会员余额</th>
+                                        <th>消费次数</th>
+                                        <th>应回赠次数</th>
+                                        <th>已回赠次数</th>
+                                        <th>备用手机号</th>
+{#                                        <th>小费</th>#}
+                                        <th>备注</th>
+                                        <th width="220px"  >操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for u in users %}
+                                        <tr class="gradeX">
+                                            <td>{{ u.pk }}</td>
+{#                                            <td>{{ u.uuid }}</td>#}
+                                            <td>{{ u.name }}</td>
+                                            <td>{{ u.phone }}</td>
+                                            <td>{{ u.address }}</td>
+                                            <td>{{ u.total_cost }}</td>
+                                            <td>{{ u.blance }}</td>
+                                            <td>{{ u.service_times }}</td>
+                                            <td>{{ u.gifts_times }}</td>
+                                            <td>{{ u.feedback_times }}</td>
+                                            <td>{{ u.phone_2 }}</td>
+                                            <td>{{ u.note }}</td>
+                                            <td>
+                                                <a href="{% url 'management_url_site:cus_edit' u.pk %}"
+                                                   class="btn btn-default "><i>编辑</i> </a>
+                                                <a href="{% url 'management_url_site:edit' u.pk %}"
+                                                   class="btn btn-default "><i>关联</i> </a>
+                                                <a href="{% url 'management_url_site:edit' u.pk %}"
+                                                   class="btn btn-default "><i>重算</i> </a>
+{#                                                <a href="#" class="btn ink-reaction btn-floating-action btn-danger"#}
+{#                                                   onclick="return confirm('暂不提供删除功能')"><i class="md md-delete"></i>#}
+{#                                                </a>#}
+
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div><!--end .table-responsive -->
+                        </div>
+                    </div>
+                </div><!--end .col -->
+            </div><!--end .row -->
+            <!-- END DATATABLE 2 -->
+
+        </div><!--end .section-body -->
+    </section>
+{% endblock %}

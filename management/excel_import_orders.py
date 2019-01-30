@@ -2,25 +2,14 @@ import xlrd
 import logging
 import datetime
 import re
-from django.utils import timezone
+
 from management.models import Massage, StaffInfo, ServiceMenu, CustomerInfo
+from .query_unit import related_to_customerinfo
 
 # wb = xlrd.open_workbook("/data/kali/test1.xls")
 # tb = wb.sheet_by_index(0)
 loger = logging.getLogger('runlog')
 staff_list = StaffInfo.objects.values_list('name', flat=True)
-
-
-def related_to_customerinfo(m):
-    if m.phone.strip() == '':  # 记录数据无电话号码，新增CustomerInfo记录随机值
-        cif = CustomerInfo.objects.create(name=m.name, address=m.address, )
-    else:
-        cif, ifcreated = CustomerInfo.objects.get_or_create(phone=m.phone, name=m.name, defaults={'address': m.address})
-    cif.service_times += 1
-    cif.total_cost += m.amount
-    cif.save()
-    m.uin = cif
-    return m
 
 
 def read_date(table, r, c):

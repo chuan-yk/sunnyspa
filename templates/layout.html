@@ -158,9 +158,9 @@
 							<!--start submenu -->
 							<ul>
 {#								<li><a href="{% url 'new' %}" ><span class="title">Add Order</span></a></li>#}
-								<li><a href="#" ><span class="title">员工基础信息</span></a></li>
-								<li><a href="#" ><span class="title">员工考勤记录</span></a></li>
-								<li><a href="#" ><span class="title">员工薪资记录</span></a></li>
+								<li><a href="{% url 'management_url_site:staff_index' %}" ><span class="title">员工基础信息</span></a></li>
+								<li><a href="{% url 'management_url_site:attendance' %}" ><span class="title">员工考勤记录</span></a></li>
+								<li><a href="{% url 'management_url_site:salary' %}" ><span class="title">员工薪资记录</span></a></li>
 							</ul><!--end /submenu -->
 						</li><!--end /menu-li -->
 						<!-- END CUSTOMER -->
@@ -173,8 +173,9 @@
 							<!--start submenu -->
 							<ul>
 {#								<li><a href="{% url 'new' %}" ><span class="title">Add Order</span></a></li>#}
-								<li><a href="#" ><span class="title">顾客基础信息</span></a></li>
-								<li><a href="#" ><span class="title">顾客消费记录</span></a></li>
+								<li><a href="{% url 'management_url_site:cus_info' %}" ><span class="title">客户档案信息</span></a></li>
+								<li><a href="{% url 'management_url_site:cus_info_summary' %}" ><span class="title" title="信息不完整的订单手动关联到正确用户">订单顾客关联</span></a></li>
+								<li><a href="{% url 'management_url_site:cus_info' %}" ><span class="title">顾客消费记录</span></a></li>
 							</ul><!--end /submenu -->
 						</li><!--end /menu-li -->
 						<!-- END CUSTOMER -->

@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'staff/salary/recalculate', views.salary_recalculate, name='salary_recalculate'),
     url(r'staff/attendance', views.attendance, name='attendance'),
     # url(r'staff/attendance/upload', views.attendance, name='attendance'),
-    url(r'customerinfo', views.cus_info, name='customerinfo'),
-    url(r'customerinfo/summary', views.cus_summary, name='customerinfo_summary'),
+    url(r'cusinfo$', views.cus_info, name='cus_info'),
+    url(r'cusinfo/(?P<pk>\d+)/edit', views.cus_edit, name='cus_edit'),
+    url(r'cusinfo/(?P<pk>\d+)/recalculate', views.cus_recalculate, name='recalculate'),
+    url(r'customerinfo/summary', views.cus_summary, name='cus_info_summary'),
 ]
