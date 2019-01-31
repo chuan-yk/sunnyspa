@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+
+{% block title %} 客户消费关联 {% endblock %}
+
+{% block body %}
+    <section xmlns="http://www.w3.org/1999/html">
+        <div class="section-body">
+            <!-- BEGIN DATATABLE 2 -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-head style-primary">
+                            <header>消费信息归类</header>
+                            <div class="tools">
+                                <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
+                                <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-lg-12">用途说明: 消费记录信息不完整用户，人工选择判断关联到对应的实际用户</div>
+                            <form class="form" role="form" action="" method="GET">
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td>&nbsp&nbsp&nbsp&nbsp&nbsp用户名:</td>
+                                        <td>
+                                            <input value="{{ name }}" type="text" id="name" name="name" maxlength="16"
+                                                   placeholder="用户名模糊查询">
+                                        </td>
+                                        <td>&nbsp&nbsp用户手机号:</td>
+                                        <td>
+                                            <input value="{{ phone }}" type="text" id="phone" name="phone"
+                                                   maxlength="50" class="" placeholder="电话号码模糊查询">
+                                        </td>
+                                        <td>&nbsp&nbsp&nbsp&nbsp用户名:&nbsp&nbsp</td>
+                                        <td>
+                                            <input value="{{ exact_name }}" type="text" id="exact_name"
+                                                   name="exact_name" maxlength="50" class="" placeholder="用户名精准查询">
+                                        </td>
+                                        <td>&nbsp&nbsp&nbsp&nbsp地址:&nbsp&nbsp</td>
+                                        <td>
+                                            <input value="{{ address }}" type="text" name="address" maxlength="100"
+                                                   style="width:240px;" placeholder="客户地址模糊查询">
+                                        </td>
+                                        <td>&nbsp&nbsp备注:</td>
+                                        <td>
+                                            <input value="{{ note }}" type="text" name="note" maxlength="100"
+                                                   style="width:240px;" placeholder="备注信息模糊查询">
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div class="col-md-12">
+                                    <div class="col-md-2">仅查看未关联或无效关联订单：
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="radio" name="filter_h" value="1" >是
+                                        <input type="radio" name="filter_h" value="0" checked="true" >否
+                                    </div>
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-2">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="card-actionbar-row">
+                                            <a href="{% url 'management_url_site:cus_relate' %}"
+                                               class="btn btn-flat btn-primary ink-reaction"><span
+                                                    class="title">重置查询</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="card-actionbar-row">
+                                            <input type="submit" class="btn btn-flat btn-primary ink-reaction"
+                                                   value="开始查询">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <form class="form" role="form" action="{% url 'management_url_site:cus_relate' %}" method="POST"> {% csrf_token %}
+                                <div class="col-sm-6">
+                                    <div class="table-responsive">
+                                        {# <table id="datatable2" class="table order-column hover">#}
+                                    <header2>订单记录用户</header2>
+                                        <table id="datatable1" class="table order-column hover">
+                                            <thead>
+                                            <tr>
+                                                <th width="20px"></th>
+                                                <th>编号</th>
+                                                <th>姓名</th>
+                                                <th>手机号</th>
+                                                <th>地址</th>
+                                                <th>已关联</th>
+                                                <th>备注</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for cu in customers %}
+                                                <tr class="gradeX">
+                                                    <td class=" text-center">
+                                                        <input type="checkbox" name="cus_id" class="text-center ipt_check"
+                                                               value="{{ cu.pk }}"  ></td>
+                                                    <td>{{ cu.pk }}</td>
+                                                    <td>{{ cu.name }}</td>
+                                                    <td>{{ cu.phone }}</td>
+                                                    <td>{{ cu.address }}</td>
+                                                    <td>{{ cu.user_id }}</td>
+                                                    <td>{{ cu.note }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div><!--end .table-responsive -->
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="table-bordered">
+                                        {# <table id="datatable2" class="table order-column hover">#}
+                                        <header2>顾客用户信息</header2>
+                                        <table id="datatable1" class="table order-column hover ">
+                                            <thead>
+                                            <tr>
+                                                <td><span title="选中关联到对于顾客信息">??</span></td>
+                                                <th>编号</th>
+                                                <th>姓名</th>
+                                                <th>手机号</th>
+                                                <th>地址</th>
+                                                <th>备注</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for u in users %}
+                                                <tr class="gradeX">
+                                                    <td><input type="radio" name="user_uid" value="{{ u.uuid }}"
+                                                               required="required"></td>
+                                                    <td>{{ u.pk }}</td>
+                                                    {#                                            <td>{{ u.uuid }}</td>#}
+                                                    <td>{{ u.name }}</td>
+                                                    <td>{{ u.phone }}</td>
+                                                    <td>{{ u.address }}</td>
+                                                    <td>{{ u.note }}</td>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div><!--end .table-responsive -->
+                                </div>
+                                <div class="col-md-12">
+                                        <div class="card-actionbar-row">
+                                            <input type="submit" class="btn btn-flat btn-primary ink-reaction"
+                                                   value="提交关联">
+                                        </div>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div><!--end .col -->
+            </div><!--end .row -->
+            <!-- END DATATABLE 2 -->
+
+        </div><!--end .section-body -->
+    </section>
+{% endblock %}

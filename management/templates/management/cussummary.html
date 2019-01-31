@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block title %} 服务订单记录 {% endblock %}
+{% block title %} 顾客消费详情查询 {% endblock %}
 
 {% block body %}
     <section xmlns="http://www.w3.org/1999/html">
@@ -10,7 +10,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-head style-primary">
-                            <header>全部订单列表</header>
+                            <header>详情列表</header>
                             <div class="tools">
                                 <a class="btn btn-icon-toggle btn-collapse"><i class="fa fa-angle-down"></i></a>
                                 <a class="btn btn-icon-toggle btn-close"><i class="md md-close"></i></a>
@@ -191,12 +191,12 @@
                                         </td>
                                         <td>&nbsp&nbsp&nbsp&nbsp账户余额:&nbsp&nbsp</td>
                                         <td>
-                                            <input type="radio" name="balance" value="-1"
-                                                    {% ifequal balance '-1' %} checked="true" {% endifequal %} >全部
-                                            <input type="radio" name="balance" value="0"
-                                                    {% ifequal balance '0' %} checked="true" {% endifequal %} >无余额
-                                            <input type="radio" name="balance" value="1"
-                                                    {% ifequal balance '1' %} checked="true" {% endifequal %} >有余额
+                                            <input type="radio" name="blance" value="-1"
+                                                    {% ifequal blance '-1' %} checked="true" {% endifequal %} >全部
+                                            <input type="radio" name="blance" value="0"
+                                                    {% ifequal blance '0' %} checked="true" {% endifequal %} >无余额
+                                            <input type="radio" name="blance" value="1"
+                                                    {% ifequal blance '1' %} checked="true" {% endifequal %} >有余额
                                         </td>
                                     </tr>
                                     </tbody>
@@ -204,30 +204,32 @@
                                 <div class="col-md-12">
                                     <div class="col-md-2">
                                         <div class="card-actionbar-row">
-                                            <a href="{% url 'management_url_site:add' %}"
+                                            <a href="{% url 'management_url_site:add' %}" target="_blank"
                                                class="btn btn-flat btn-primary ink-reaction"><span
                                                     class="title">新增服务记录</span></a>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <div class="card-actionbar-row">
-                                          <a href="{% url 'management_url_site:batch_add' %}"
+{#                                        <div class="card-actionbar-row">#}
+{#                                          <a href="{% url 'management_url_site:batch_add' %}"#}
 {#                                            <a href="#" onclick="return confirm('导入功能待完善')"#}
-                                               class="btn btn-flat btn-primary ink-reaction">
-                                                    <span class="title">导入服务记录</span></a>
-                                        </div>
+{#                                               class="btn btn-flat btn-primary ink-reaction">#}
+{#                                                    <span class="title">导入服务记录</span></a>#}
+{#                                        </div>#}
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2">
+                                        {% if hava_list %}
                                         <div class="card-actionbar-row">
                                             <p class="btn btn-flat btn-primary ink-reaction"><span
                                                     class="title">查询共 {{ orders_count }} 条</span></p>
                                             </p>
                                         </div>
+                                        {% endif %}
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card-actionbar-row">
-                                            <a href="{% url 'management_url_site:orders' %}"
+                                            <a href="{% url 'management_url_site:cus_info_summary' %}"
                                                class="btn btn-flat btn-primary ink-reaction"><span
                                                     class="title">重置查询</span></a>
                                         </div>
@@ -241,6 +243,7 @@
                                 </div>
                             </form>
                             <hr><hr><hr>
+                        {% if hava_list %}
                             <div class="table-responsive">
                                 {# <table id="datatable2" class="table order-column hover">#}
                                 <table id="datatable1" class="table order-column hover">
@@ -299,6 +302,9 @@
                                     </tbody>
                                 </table>
                             </div><!--end .table-responsive -->
+                        {% else %}
+                            请选择查询条件
+                        {% endif %}
                         </div>
                     </div>
                 </div><!--end .col -->

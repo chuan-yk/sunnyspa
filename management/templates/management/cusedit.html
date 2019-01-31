@@ -20,37 +20,45 @@
                                 <div class="col-sm-6">
                                     <header>用户基本信息</header>
                                     <div class="form-group floating-label">
-                                        <input name="name" value="姓名：{{ user.name }}" readonly="readonly"
-                                               maxlength="200" class="form-control static dirty" type="text">
+                                        姓名：<input name="name" value="{{ user.name }}"
+                                                  maxlength="200" class="form-control static dirty" type="text">
                                     </div>
                                     <div class="form-group floating-label">
-                                        <input name="name" value="手机号：{{ user.phone }}" readonly="readonly"
-                                               maxlength="200" class="form-control static dirty" type="text">
+                                        手机号：<input name="phone" value="{{ user.phone }}" readonly="readonly"
+                                                   maxlength="200" class="form-control static dirty" type="text">
                                     </div>
                                     <div class="form-group floating-label">
-                                        <input name="name" value="地址：{{ user.address }}" readonly="readonly"
-                                               maxlength="200" class="form-control static dirty" type="text">
+                                        消费总金额：<input name="total_cost" value="{{ user.total_cost }}" readonly="readonly"
+                                                     maxlength="200" class="form-control static dirty" type="text">
                                     </div>
                                     <div class="form-group floating-label">
-                                        <input name="name" value="消费总次数：{{ user.service_times }}" readonly="readonly"
-                                               maxlength="200" class="form-control static dirty" type="text">
+                                        消费总次数：<input name="service_times" value="{{ user.service_times }}"
+                                                     readonly="readonly"
+                                                     maxlength="200" class="form-control static dirty" type="text">
                                     </div>
                                     <div class="form-group floating-label">
-                                        <input name="name" value="应赠送次数：{{ user.gifts_times }}" readonly="readonly"
-                                               maxlength="200" class="form-control static dirty" type="text">
+                                        应赠送次数：<input name="gifts_times" value="{{ user.gifts_times }}"
+                                                     readonly="readonly"
+                                                     maxlength="200" class="form-control static dirty" type="text">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <form class="form" role="form" action="" method="post"> {% csrf_token %}
                                         <header>可选更新信息</header>
                                         <div class="form-group floating-label">
-                                            <input name="blance" value="{{ user.blance }}" id="blance"
+                                            <label for="regular2">账户地址：</label>
+                                            <input name="address" value="{{ user.address }}"
+                                                      maxlength="200" class="form-control static dirty" type="text">
+                                        </div>
+                                        <div class="form-group floating-label">
+                                            <input name="balance" value="{{ user.balance }}" id="balance"
                                                    class="form-control static dirty" required="" type="number">
                                             <label for="regular2">账户余额</label>
                                         </div>
 
                                         <div class="form-group floating-label">
-                                            <input name="feedback_times" value="{{ user.feedback_times }}" id="feedback_times"
+                                            <input name="feedback_times" value="{{ user.feedback_times }}"
+                                                   id="feedback_times"
                                                    class="form-control static dirty" required="" type="number">
                                             <label for="regular2">已赠送次数</label>
                                         </div>
@@ -66,7 +74,7 @@
                                         </div>
                                         <div class="form-group floating-label">有效用户：
                                             <input type="radio" name="isvalid" checked="true" value="1">有效
-                                            <input type="radio" name="isvalid" value="0" >
+                                            <input type="radio" name="isvalid" value="0">
                                             <span title="确认无效后将不再展示">无效</span>
                                             <label for="regular2">是否为真实有效用户</label>
                                         </div>

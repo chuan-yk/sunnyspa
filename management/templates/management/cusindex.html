@@ -133,7 +133,7 @@
                                             <td>
                                                 <a href="{% url 'management_url_site:cus_edit' u.pk %}"
                                                    class="btn btn-default "><i>编辑</i> </a>
-                                                <a href="{% url 'management_url_site:edit' u.pk %}"
+                                                <a href="{% url 'management_url_site:cus_relate' %}?user_uuid={{ u.uuid }}"
                                                    class="btn btn-default "><i>关联</i> </a>
                                                 <a href="{% url 'management_url_site:cus_recalculate' u.pk %}"
                                                    class="btn btn-default "><i>重算</i> </a>
