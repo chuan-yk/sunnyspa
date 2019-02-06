@@ -234,9 +234,9 @@ def handler_query(request):
     # 用户余额有无查询
     if request.GET.get('balance'):
         balance_num = request.GET['balance'].strip()
-        if balance_num == 1:
+        if balance_num == '1':
             query_conditions.append(Q(uin__balance__gt=0))
-        elif balance_num == 0:
+        elif balance_num == '0':
             query_conditions.append(Q(uin__balance__exact=0))
         else:
             pass

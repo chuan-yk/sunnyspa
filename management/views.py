@@ -166,7 +166,7 @@ def ordersanalysis(request):
     summary = multiple_query(handler_query_result['query_dict']['start_date'],
                              handler_query_result['query_dict']['end_date'],
                              handler_query_result['query_conditions'], )
-    print(summary)
+    # print(summary)
     # template - content
     content = {'massagist_list': handler_query_result['massagist_list'],
                'payment_list': handler_query_result['payment_list'],
@@ -175,6 +175,7 @@ def ordersanalysis(request):
                'order_status_list': handler_query_result['order_status_list'],
                **handler_query_result['query_dict'],
                **summary, }
+    print('----', content['balance'])
     return render(request, 'management/analysis.html', content)
 
 
