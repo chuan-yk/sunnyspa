@@ -21,5 +21,6 @@ urlpatterns = [
     url(r'cusinfo/(?P<pk>\d+)/edit$', views.cus_edit, name='cus_edit'),
     url(r'cusinfo/recalculate$', views.cus_recalculate_all, name='cus_recalculate_all'),
     url(r'cusinfo/(?P<pk>\d+)/recalculate$', views.cus_recalculate, name='cus_recalculate'),
-    url(r'customerinfo/summary$', views.cus_summary, name='cus_info_summary'),
+    url(r'cusinfo/relateto$', views.cus_relate, name='cus_relate'),
+    url(r'cusinfo/summary$', views.cus_summary, name='cus_info_summary'),
 ]

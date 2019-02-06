@@ -83,10 +83,10 @@ class RealUser(models.Model):
     address = models.TextField(max_length=500, default='_', help_text="登记地址, 多个地址以'|'隔开")
     service_times = models.IntegerField(default=0, help_text="服务次数")
     total_cost = models.IntegerField(default=0, help_text="总共消费")
-    blance = models.IntegerField(default=0, help_text="充值余额")
+    balance = models.IntegerField(default=0, help_text="充值余额")
     gifts_times = models.IntegerField(default=0, help_text="应该免费赠送次数")
     feedback_times = models.IntegerField(default=0, help_text="实际赠送次数")
-    isvalid = models.IntegerField(default=1, blank=True, help_text="是否为有效的真实客户(区别于自动创建的用户), 1有效，0无效")
+    isvalid = models.IntegerField(default=1, blank=True, help_text="是否为有效的真实客户(区别于自动创建的用户),0无效,1有效，2,3")
     update_time = models.DateTimeField(auto_now=True, null=False, help_text='更新时间')
     note = models.CharField(max_length=500, help_text="备注信息")
 
@@ -120,8 +120,8 @@ class CustomerInfo(models.Model):
         unique_together = (('name', 'phone'),)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs, ):
-        loger.debug("model CustomerInfo Save Function Start")
         if not self.user:   # 无关联realuser， 默认关联一个 Real user
+            loger.debug("model CustomerInfo Save Function 默认关联 Start")
             relate_user, ifcreated = RealUser.objects.get_or_create(phone=self.phone, defaults={'name': self.name,
                                                                                                 'address': self.address})
             loger.debug("model CustomerInfo Save Function Auto relate to Realuser, Create={}".format(ifcreated))

@@ -148,13 +148,13 @@ def multiple_query(sdate, edate, query_conditions):
 def handler_query(request):
     """复用方法, 返回值： {'query_dict': 查询条件， 'query_conditions': 合并后的Q实例, 'select_list': select_list} """
     query_dict = {'name': '', 'exact_name': '', 'phone': '', 'address': '', 'note': '', 'massagist': '', 'payment': '',
-                  'items': '', 'duration': '', 'order_status': '', 'fee': '', 'blance': '', 'discount': '',
+                  'items': '', 'duration': '', 'order_status': '', 'fee': '', 'balance': '', 'discount': '',
                   'start_date': '', 'end_date': '', }
     # 查询条件开始日期
     if request.GET.get('start_date'):
         start_date = datetime.datetime.strptime(request.GET['start_date'].strip(), '%Y-%m-%d').date()
     else:
-        start_date = datetime.date(2017, 8, 31)  # 默认开业时间
+        start_date = datetime.date(2017, 1, 1)  # 默认开业时间
     query_dict['start_date'] = start_date.strftime("%Y-%m-%d")
     # 查询条件结束日期
     if request.GET.get('end_date'):
@@ -232,15 +232,15 @@ def handler_query(request):
             pass
         query_dict['fee'] = fee_value
     # 用户余额有无查询
-    if request.GET.get('blance'):
-        blance_num = request.GET['blance'].strip()
-        if blance_num == 1:
-            query_conditions.append(Q(uin__blance__gt=0))
-        elif blance_num == 0:
-            query_conditions.append(Q(uin__blance__exact=0))
+    if request.GET.get('balance'):
+        balance_num = request.GET['balance'].strip()
+        if balance_num == 1:
+            query_conditions.append(Q(uin__balance__gt=0))
+        elif balance_num == 0:
+            query_conditions.append(Q(uin__balance__exact=0))
         else:
             pass
-        query_dict['blance'] = blance_num
+        query_dict['balance'] = balance_num
     # 是否打折条件查询
     if request.GET.get('discount'):
         discount_tag = request.GET['discount']
