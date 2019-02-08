@@ -17,7 +17,8 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form class="form" role="form" action="" method="GET"> {% csrf_token %}
+                            <form class="form" role="form" action="" method="GET">
+{#                                {% csrf_token %}#}
                                 <table>
                                     <tbody>
                                     <tr>
@@ -191,12 +192,12 @@
                                         </td>
                                         <td>&nbsp&nbsp&nbsp&nbsp账户余额:&nbsp&nbsp</td>
                                         <td>
-                                            <input type="radio" name="blance" value="-1"
-                                                    {% ifequal blance '-1' %} checked="true" {% endifequal %} >全部
-                                            <input type="radio" name="blance" value="0"
-                                                    {% ifequal blance '0' %} checked="true" {% endifequal %} >无余额
-                                            <input type="radio" name="blance" value="1"
-                                                    {% ifequal blance '1' %} checked="true" {% endifequal %} >有余额
+                                            <input type="radio" name="balance" value="-1"
+                                                    {% ifequal balance '-1' %} checked="true" {% endifequal %} >全部
+                                            <input type="radio" name="balance" value="0"
+                                                    {% ifequal balance '0' %} checked="true" {% endifequal %} >无余额
+                                            <input type="radio" name="balance" value="1"
+                                                    {% ifequal balance '1' %} checked="true" {% endifequal %} >有余额
                                         </td>
                                     </tr>
                                     </tbody>
@@ -217,15 +218,19 @@
 {#                                                    <span class="title">导入服务记录</span></a>#}
 {#                                        </div>#}
                                     </div>
-                                    <div class="col-md-2"></div>
                                     <div class="col-md-2">
-                                        {% if hava_list %}
                                         <div class="card-actionbar-row">
                                             <p class="btn btn-flat btn-primary ink-reaction"><span
-                                                    class="title">查询共 {{ orders_count }} 条</span></p>
+                                                    class="title">满足条件用户共 {{ user_list|length }} 人</span></p>
                                             </p>
                                         </div>
-                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="card-actionbar-row">
+                                            <p class="btn btn-flat btn-primary ink-reaction"><span
+                                                    class="title">服务记录共 {{ orders_count }} 条</span></p>
+                                            </p>
+                                        </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="card-actionbar-row">

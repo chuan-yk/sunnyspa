@@ -235,9 +235,9 @@ def handler_query(request):
     if request.GET.get('balance'):
         balance_num = request.GET['balance'].strip()
         if balance_num == '1':
-            query_conditions.append(Q(uin__balance__gt=0))
+            query_conditions.append(Q(uin__user__balance__gt=0))
         elif balance_num == '0':
-            query_conditions.append(Q(uin__balance__exact=0))
+            query_conditions.append(Q(uin__user__balance__exact=0))
         else:
             pass
         query_dict['balance'] = balance_num
@@ -305,7 +305,7 @@ def cus_handle_query(request):
 
 
 def massage_belong_realuser(pk):
-    """realuser 关联cus下全部massage"""
+    """realuser 关联cus下全部massage, amount!=免费此时不算入回馈计次"""
     return Massage.objects.filter(Q(uin__user__pk=pk), ~Q(amount=0))
 
 

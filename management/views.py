@@ -302,27 +302,31 @@ def cus_summary(request):
     # Realuser 查询条件
     user_query_conditions = []
     if query_dict['name'] != '':
-        user_query_conditions = user_query_conditions.append(Q(name__icontains=query_dict['name']))
+        user_query_conditions.append(Q(name__icontains=query_dict['name']))
     if query_dict['exact_name'] != '':
-        user_query_conditions = user_query_conditions.append(Q(name__exact=query_dict['exact_name']))
+        user_query_conditions.append(Q(name__exact=query_dict['exact_name']))
     if query_dict['phone'] != '':
-        user_query_conditions = user_query_conditions.append(Q(phone__icontains=query_dict['phone']))
+        user_query_conditions.append(Q(phone__icontains=query_dict['phone']))
     if query_dict['address'] != '':
-        user_query_conditions = user_query_conditions.append(Q(address__icontains=query_dict['address']))
+        user_query_conditions.append(Q(address__icontains=query_dict['address']))
     if query_dict['note'] != '':
-        user_query_conditions = user_query_conditions.append(Q(note__exact=query_dict['note']))
+        user_query_conditions.append(Q(note__exact=query_dict['note']))
+    if query_dict['balance'] == '1':
+        user_query_conditions.append(Q(balance__gt=0))
+    if query_dict['balance'] == '0':
+        user_query_conditions.append(Q(balance=0))
     # Massage 查询条件
     mg_query_conditions = []
     if query_dict['massagist'] != '':
-        mg_query_conditions = mg_query_conditions.append(Q(massagist__name=query_dict['massagist']))
+        mg_query_conditions.append(Q(massagist__name=query_dict['massagist']))
     if query_dict['payment'] != '':
-        mg_query_conditions = mg_query_conditions.append(Q(payment_option=query_dict['payment']))
+        mg_query_conditions.append(Q(payment_option=query_dict['payment']))
     if query_dict['items'] != '':
-        mg_query_conditions = mg_query_conditions.append(Q(service_type__items=query_dict['items']))
+        mg_query_conditions.append(Q(service_type__items=query_dict['items']))
     if query_dict['duration'] != '':
-        mg_query_conditions = mg_query_conditions.append(Q(service_type__duration=query_dict['duration']))
+        mg_query_conditions.append(Q(service_type__duration=query_dict['duration']))
     if query_dict['order_status'] != '':
-        mg_query_conditions = mg_query_conditions.append(Q(order_status__icontains=query_dict['order_status']))
+        mg_query_conditions.append(Q(order_status__icontains=query_dict['order_status']))
     if query_dict['fee'] != '':
         fee_value = query_dict['fee']
         if fee_value == '1':
@@ -331,23 +335,28 @@ def cus_summary(request):
             mg_query_conditions.append(Q(fee__exact=0))
         else:
             pass
-        mg_query_conditions = mg_query_conditions.append(Q(payment_option=query_dict['payment']))
-    if query_dict['balance'] != '':
-        mg_query_conditions = mg_query_conditions.append(Q(payment_option=query_dict['payment']))
-    if query_dict['discount'] != '':
-        mg_query_conditions = mg_query_conditions.append(Q(payment_option=query_dict['payment']))
+    if query_dict['payment'] != '':
+        mg_query_conditions.append(Q(payment_option=query_dict['payment']))
+    if query_dict['discount'] == '1':
+        mg_query_conditions.append(Q(discount__gt=0))
+    if query_dict['discount'] == '0':
+        mg_query_conditions.append(Q(discount__exact=0))
     if query_dict['start_date'] != '':
-        mg_query_conditions = mg_query_conditions.append(Q(payment_option=query_dict['payment']))
-
+        mg_query_conditions.append(Q(service_date__gte=query_dict['start_date']))
     if query_dict['end_date'] != '':
-        pass
+        mg_query_conditions.append(Q(service_date__lte=query_dict['end_date']))
+    # 满足条件用户列表
     user_list = RealUser.objects.filter(*user_query_conditions)
-
+    user_list = user_list[:10]
+    mg_query_conditions.append(Q(uin__user__pk__in=[ i.pk for i in user_list ]))
+    orders = Massage.objects.filter(*mg_query_conditions)
     content = {'massagist_list': handler_query_result['massagist_list'],      # 默认返回全部
                'payment_list': handler_query_result['payment_list'],
-               'items_list': handler_query_result['items_list'],
-               'duration_list': handler_query_result['duration_list'], 'orders_count': orders_count,
+               'items_list': handler_query_result['items_list'], 'user_list': user_list,
+               'duration_list': handler_query_result['duration_list'], 'orders_count': len(orders),
                'order_status_list': handler_query_result['order_status_list'], 'orders': orders,
                **handler_query_result['query_dict'], }
+    if content['exact_name'] == '':
+        content['exact_name'] = 'dendi'
     return render(request, 'management/cussummary.html', content)
 
