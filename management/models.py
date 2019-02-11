@@ -176,4 +176,13 @@ class Massage(models.Model):
 
 
 class Attendance(models.Model):
-    staff = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, default=None, null=False, help_text="员工")
+    staff = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, default=None, null=True, help_text="员工")
+    work_date = models.DateField(default=timezone.now, null=True, blank=True, help_text="工作日(超过12点仍算作前一天业绩)")
+    check_in = models.DateTimeField(null=True, blank=True, help_text="上班打卡时间")
+    check_out = models.DateTimeField(null=True, blank=True, help_text="下班打卡时间")
+    shift_time = models.CharField(null=True, blank=True, max_length=500, help_text="规定上班时间，灵活可变")
+    come_late = models.BooleanField(default=False, blank=True, help_text="是否迟到")
+    total_time = models.FloatField(default=10, null=True, blank=True, help_text="总时间,Hour")
+    overtime = models.FloatField(default=0, null=True, blank=True, help_text="总时间，Hour")
+
+
