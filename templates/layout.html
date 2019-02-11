@@ -158,12 +158,25 @@
 							<!--start submenu -->
 							<ul>
 {#								<li><a href="{% url 'new' %}" ><span class="title">Add Order</span></a></li>#}
-								<li><a href="{% url 'management_url_site:staff_index' %}" ><span class="title">员工基础信息</span></a></li>
+								<li><a href="/admin/management/staffinfo/" ><span class="title">员工基础信息</span></a></li>
 								<li><a href="{% url 'management_url_site:attendance' %}" ><span class="title">员工考勤记录</span></a></li>
 								<li><a href="{% url 'management_url_site:salary' %}" ><span class="title">员工薪资记录</span></a></li>
 							</ul><!--end /submenu -->
-						</li><!--end /menu-li -->
+						</li><!--end /STAFF -->
 						<!-- END CUSTOMER -->
+                        <li class="gui-folder">
+							<a>
+								<div class="gui-icon"><i class="fa fa-css3"></i></div>
+								<span class="title">店面信息管理</span>
+							</a>
+							<!--start submenu -->
+							<ul>
+{#								<li><a href="{% url 'new' %}" ><span class="title">Add Order</span></a></li>#}
+								<li><a href="/admin/management/servicemenu/" ><span class="title">服务项目菜单</span></a></li>
+								<li><a href="{% url 'management_url_site:attendance' %}" ><span class="title">投入成本记录</span></a></li>
+								<li><a href="{% url 'management_url_site:salary' %}" ><span class="title">盈利信息统计</span></a></li>
+							</ul><!--end /submenu -->
+						</li>
                         		<!-- BEGIN STAFF -->
 						<li class="gui-folder">
 							<a>

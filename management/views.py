@@ -348,7 +348,7 @@ def cus_summary(request):
     # 满足条件用户列表
     user_list = RealUser.objects.filter(*user_query_conditions)
     user_list = user_list[:10]
-    mg_query_conditions.append(Q(uin__user__pk__in=[ i.pk for i in user_list ]))
+    mg_query_conditions.append(Q(uin__user__pk__in=[i.pk for i in user_list]))
     orders = Massage.objects.filter(*mg_query_conditions)
     content = {'massagist_list': handler_query_result['massagist_list'],      # 默认返回全部
                'payment_list': handler_query_result['payment_list'],
@@ -356,7 +356,5 @@ def cus_summary(request):
                'duration_list': handler_query_result['duration_list'], 'orders_count': len(orders),
                'order_status_list': handler_query_result['order_status_list'], 'orders': orders,
                **handler_query_result['query_dict'], }
-    if content['exact_name'] == '':
-        content['exact_name'] = 'dendi'
     return render(request, 'management/cussummary.html', content)
 

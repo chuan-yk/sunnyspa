@@ -4,7 +4,6 @@ from django.db import models
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 
-
 loger = logging.getLogger('runlog')
 
 
@@ -120,7 +119,7 @@ class CustomerInfo(models.Model):
         unique_together = (('name', 'phone'),)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None, *args, **kwargs, ):
-        if not self.user:   # 无关联realuser， 默认关联一个 Real user
+        if not self.user:  # 无关联realuser， 默认关联一个 Real user
             loger.debug("model CustomerInfo Save Function 默认关联 Start")
             relate_user, ifcreated = RealUser.objects.get_or_create(phone=self.phone, defaults={'name': self.name,
                                                                                                 'address': self.address})
@@ -174,3 +173,7 @@ class Massage(models.Model):
 
     def __str__(self):
         return '顾客： {} |- 消费：{}'.format(str(self.name), str(self.service_type))
+
+
+class Attendance(models.Model):
+    staff = models.ForeignKey(StaffInfo, on_delete=models.SET_NULL, default=None, null=False, help_text="员工")
